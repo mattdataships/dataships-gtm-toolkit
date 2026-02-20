@@ -26,27 +26,34 @@ Pull deal data from four HubSpot lists, break down by Marketing vs Partnerships,
 
 ## How to Query
 
-Use `search_crm_objects` with `ilsListIds` property filter:
+**Use compound filters** — always filter by BOTH `ilsListIds` AND `dealtype` in the same query. This returns pre-separated data so you never need to manually sort deals by type.
+
+Run **8 parallel queries** (4 lists × 2 deal types):
 
 ```
 objectType: deals
-filterGroups: [{"filters": [{"propertyName": "ilsListIds", "operator": "EQ", "value": "{LIST_ID}"}]}]
+filterGroups: [{"filters": [
+  {"propertyName": "ilsListIds", "operator": "EQ", "value": "{LIST_ID}"},
+  {"propertyName": "dealtype", "operator": "EQ", "value": "PLS"}
+]}]
 ```
 
+The 8 queries:
+1. List 6688 + PLS (WTD Marketing SQOs)
+2. List 6688 + Partnership (WTD Partnership SQOs)
+3. List 6689 + PLS (WTD Marketing Won)
+4. List 6689 + Partnership (WTD Partnership Won)
+5. List 6691 + PLS (QTD Marketing SQOs)
+6. List 6691 + Partnership (QTD Partnership SQOs)
+7. List 6690 + PLS (QTD Marketing Won)
+8. List 6690 + Partnership (QTD Partnership Won)
+
 Pull these properties on every query:
-- `dealname`, `dealtype`, `amount`, `dealstage`, `pipeline`, `closedate`
+- `dealname`, `amount`
+
+Set `limit: 200` to avoid pagination issues.
 
 **Pagination:** If `total` > `limit`, paginate using `offset` to get all deals. Never report partial data.
-
-## Deal Type Mapping
-
-| `dealtype` value | Report category |
-|-----------------|-----------------|
-| `PLS` | Marketing |
-| `Partnership` | Partnerships |
-| All others | Exclude from this report |
-
-Only Marketing and Partnerships deals appear in this report. Filter out Sales, Customer, Agency, etc.
 
 ## Quarterly Targets (Q1 2026)
 
@@ -99,16 +106,33 @@ Partnerships
 
 ## Process
 
-1. **Query all four lists** — pull all deals from 6688, 6689, 6690, 6691
-2. **Filter by dealtype** — separate into PLS (Marketing) and Partnership (Partnerships)
-3. **Calculate WTD metrics** — from lists 6688 (SQO) and 6689 (Closed Won)
-4. **Calculate QTD metrics** — from lists 6691 (SQO) and 6690 (Closed Won)
-5. **Calculate % progress** against quarterly targets
-6. **List new customers** — deal names from list 6689, grouped by category
-7. **Output the formatted report**
+1. **Run all 8 queries in parallel** — one call per list+dealtype combo (see "How to Query" above)
+2. **Write raw API responses to temp JSON files** — immediately after receiving each query result, write the full results array to a temp file (e.g., `/tmp/wtd_mkt_sqo.json`). One file per query. This is MANDATORY — never skip this step.
+3. **Sum amounts with a Python script that reads from the temp files** — the script must parse the JSON files and extract `amount` from each deal programmatically. NEVER manually transcribe amounts into an array. This was the source of a real error where 9 deals were dropped from a 105-deal list, producing a $1.5K discrepancy.
+4. **Get deal counts** from the `total` field in each query response
+5. **Get new customer names** from the WTD Won queries (lists 6689)
+6. **Calculate % progress** against quarterly targets
+7. **Output the formatted report** — go straight to the clean readout, no intermediate analysis
 
-## Important Notes
+Example of the correct approach for step 2-3:
+```python
+# Step 2: Write each API response to a file
+import json
+# After each MCP query, write results to /tmp/
+with open('/tmp/qtd_mkt_sqo.json', 'w') as f:
+    json.dump(results, f)
+
+# Step 3: Sum from files — NEVER from manually typed arrays
+import json
+with open('/tmp/qtd_mkt_sqo.json') as f:
+    deals = json.load(f)
+total = sum(float(d['properties']['amount'] or 0) for d in deals)
+```
+
+## Execution Rules
 - **Subagents cannot access HubSpot MCP tools** — run all queries from the main thread
-- **Query all four lists in parallel** when possible to speed things up
-- If any list returns 0 results, report it as 0 — don't error out
+- **All 8 queries in parallel** — this is the single biggest speed lever
+- **NEVER manually transcribe amounts** — always write API responses to temp JSON files and have Python read from those files. Manual transcription of large deal lists WILL produce errors. This is the #1 accuracy rule.
+- **Don't overcomplicate** — no subagents, no extra analysis steps. Query → write to file → script reads files → report.
+- If any query returns 0 results, report it as 0 — don't error out
 - Watch for deals with `amount` = "0.1" — these are placeholder amounts from auto-created deals and should be flagged
