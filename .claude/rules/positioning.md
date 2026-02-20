@@ -68,7 +68,7 @@ Dataships is creating the consent optimization category. Primary alternatives:
 | Always say | Never say |
 |---|---|
 | Consent optimization platform | Compliance platform |
-| Consent infrastructure | Widget / app |
-| Privacy rules engine (for that specific pillar) | "Tweak the language on your checkout" |
-| "We grow LTV with dynamic consent collection" | "A simple change to consent language can increase..." |
-| Use "compliance" as an adjective (compliance decisions, compliance safeguards) | Never use "compliance" as a noun to describe Dataships |
+| Consent infrastructure | "We grow LTV with dynamic consent collection" |
+| Privacy rules engine (for that specific pillar) | Widget / app |
+| Use "compliance" as an adjective (compliance decisions, compliance safeguards) | "We tweak the language on your checkout" |
+| | "A simple change to consent language can increase..." |
