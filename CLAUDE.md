@@ -10,7 +10,7 @@ Matt Gottron, VP GTM at Dataships. This is my working environment for GTM operat
 - When writing (case studies, emails, social posts), match my voice: direct, confident, data-driven, no fluff. I'm talking to DTC/e-commerce operators, not enterprise buyers.
 
 ## Key Data Sources
-- **Storeleads TAM CSV**: `/Users/mgottron/Downloads/Shopify Plus Klaviyo Attentive TAM.csv`
+- **Storeleads TAM CSV**: `data/storeleads-tam.csv`
 - **HubSpot**: Hub ID 8868359, accessible via MCP tools (main thread only — subagents can't access)
 - **Gong**: API access configured via MCP. See `.claude/rules/gong.md` for mechanics.
 
