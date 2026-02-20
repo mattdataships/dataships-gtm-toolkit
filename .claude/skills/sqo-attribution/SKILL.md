@@ -27,7 +27,11 @@ Analyze marketing attribution for deals in the SQO list. Pull deal + contact dat
 ## Process
 
 ### Step 1: Pull Deals from the SQO List
-Use `search_crm_objects` with objectType `deals` and filter by list membership (ILS list ID 6780).
+Use `search_crm_objects` with `ilsListIds` property filter:
+```
+objectType: deals
+filterGroups: [{"filters": [{"propertyName": "ilsListIds", "operator": "EQ", "value": "6780"}]}]
+```
 
 Properties to pull on deals:
 - `dealname`, `dealstage`, `deal_type___sub_category`, `amount`
@@ -134,4 +138,4 @@ Agency-From Event, Agency-From Outbound, Customer-Additional Store, Customer-Dow
 - **Subagents cannot access HubSpot MCP tools** — run all queries from the main thread
 - **Always check emails on BOTH contact AND deal** — this is the #1 source of missed DTConnect attribution
 - **Last-touch wins** — if a deal has both a LinkedIn ad source AND a Landmark email, the most recent signal determines attribution
-- **ILS list filter:** Use `filterGroups` with `ilsListIds` filter type. NOTE: ILS list filtering works for contacts but may need workaround for deals — if list filtering fails, pull contacts from the list and then get their associated deals.
+- **List query syntax:** `{"propertyName": "ilsListIds", "operator": "EQ", "value": "6780"}` — this works for deals
