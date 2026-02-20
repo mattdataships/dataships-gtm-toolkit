@@ -14,7 +14,7 @@ This context matters for the viability assessment at the end.
 
 ## Input Files (typically in ~/Downloads/)
 1. **Event CSV** - Single "Company" column with company names (may have duplicates, "NA" rows)
-2. **Storeleads TAM CSV** - Export with columns: domain, categories, cluster_domains, combined_followers, country_code, domain_count, estimated_monthly_visits, estimated_yearly_sales, installed_apps_names, linkedin_url, merchant_name, plan, platform_rank, twitter_followers
+2. **Storeleads TAM CSV** - `data/storeleads-tam.csv` — columns: domain, categories, cluster_domains, combined_followers, country_code, domain_count, estimated_monthly_visits, estimated_yearly_sales, installed_apps_names, linkedin_url, merchant_name, plan, platform_rank, twitter_followers
 
 ## Process
 1. **Parse & deduplicate** the event company list (strip whitespace, remove NA rows, deduplicate)
