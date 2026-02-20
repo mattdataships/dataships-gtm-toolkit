@@ -1,7 +1,20 @@
+---
+name: event-enrichment
+description: |
+  Use when user asks to enrich an event list, assess event viability, run a playbook,
+  score companies for an event, or rank brands for an event.
+  Triggers on: "enrich this list", "run the playbook", "run the Denver playbook",
+  "score these companies", "is this event worth it", "event viability",
+  "rank this event list"
+  Do NOT use for: Gong call review (use gong-review), general HubSpot lookups,
+  or non-event company research
+argument-hint: event name or CSV file
+---
+
 # Event GTM Enrichment Playbook
 
 ## Overview
-When Matt says "run the Denver playbook" or "enrich this event list", follow this process to match event company lists against Storeleads data and HubSpot deals, then produce a ranked Excel file.
+Match event company lists against Storeleads data and HubSpot deals, then produce a ranked Excel file with a viability assessment.
 
 ## Step 0: Ask About the Event (ALWAYS do this first)
 Before diving into data, ask Matt:
@@ -12,8 +25,8 @@ Before diving into data, ask Matt:
 
 This context matters for the viability assessment at the end.
 
-## Input Files (typically in ~/Downloads/)
-1. **Event CSV** - Single "Company" column with company names (may have duplicates, "NA" rows)
+## Input Files
+1. **Event CSV** - Single "Company" column with company names (may have duplicates, "NA" rows). Typically in ~/Downloads/
 2. **Storeleads TAM CSV** - `data/storeleads-tam.csv` — columns: domain, categories, cluster_domains, combined_followers, country_code, domain_count, estimated_monthly_visits, estimated_yearly_sales, installed_apps_names, linkedin_url, merchant_name, plan, platform_rank, twitter_followers
 
 ## Process
