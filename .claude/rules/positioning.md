@@ -70,5 +70,5 @@ Dataships is creating the consent optimization category. Primary alternatives:
 | Consent optimization platform | Compliance platform |
 | Consent infrastructure | Widget / app |
 | Privacy rules engine (for that specific pillar) | "Tweak the language on your checkout" |
-| Compliance as adjective (decisions, safeguards, checks) | "A simple change to consent language can increase..." |
-| "We grow LTV with dynamic consent collection" | |
+| "We grow LTV with dynamic consent collection" | "A simple change to consent language can increase..." |
+| Use "compliance" as an adjective (compliance decisions, compliance safeguards) | Never use "compliance" as a noun to describe Dataships |
