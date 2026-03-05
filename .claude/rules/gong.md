@@ -1,10 +1,12 @@
 # Gong Access & Mechanics
 
 ## API Credentials
-- **Access Key**: REDACTED_GONG_ACCESS_KEY
-- **Secret**: REDACTED_GONG_SECRET
-- **Base URL**: https://us-26354.api.gong.io
-- **Auth**: Basic auth, base64-encode `key:secret`
+Stored in `.env` at the repo root. Load with `python-dotenv` or read directly:
+- `GONG_ACCESS_KEY`
+- `GONG_ACCESS_KEY_SECRET`
+- `GONG_BASE_URL`
+
+Auth: Basic auth, base64-encode `key:secret`
 
 ## MCP vs Direct API
 The Gong MCP server (`search_calls`) is available but limited — it only filters by date, user IDs, and call IDs. **It cannot search by call title or company name.**
@@ -15,11 +17,14 @@ For any workflow that requires finding calls by company/brand name, use direct A
 
 ### Search All Calls (paginated)
 ```python
-import requests, base64, json
+import requests, base64, json, os
+from dotenv import load_dotenv
 
-key = "REDACTED_GONG_ACCESS_KEY"
-secret = "REDACTED_GONG_SECRET"
-base_url = "https://us-26354.api.gong.io"
+load_dotenv()
+
+key = os.environ["GONG_ACCESS_KEY"]
+secret = os.environ["GONG_ACCESS_KEY_SECRET"]
+base_url = os.environ["GONG_BASE_URL"]
 auth = base64.b64encode(f"{key}:{secret}".encode()).decode()
 headers = {"Authorization": f"Basic {auth}", "Content-Type": "application/json"}
 
