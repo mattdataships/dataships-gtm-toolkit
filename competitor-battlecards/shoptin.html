@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battlecard: Shoptin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy-deep: #001827;
+    --navy: #001E30;
+    --blue: #10A4FF;
+    --green: #4ACE96;
+    --white: #FFFFFF;
+    --gray-50: #F7F9FB;
+    --gray-100: #EDF1F5;
+    --gray-200: #D8DFE7;
+    --gray-400: #8B97A5;
+    --gray-600: #4A5568;
+    --red-soft: #FF6B6B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gray-50);
+    color: var(--navy-deep);
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 100%);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(16,164,255,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .header-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .header-subtitle {
+    font-size: 13px;
+    color: var(--gray-400);
+    font-weight: 500;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(74, 206, 150, 0.15);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-top: 16px;
+    letter-spacing: 0.5px;
+  }
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 20px 28px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    letter-spacing: -0.2px;
+  }
+  .card-header .icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .icon-blue { background: rgba(16,164,255,0.1); color: var(--blue); }
+  .icon-green { background: rgba(74,206,150,0.1); color: var(--green); }
+  .icon-navy { background: rgba(0,24,39,0.08); color: var(--navy-deep); }
+  .icon-red { background: rgba(255,107,107,0.1); color: var(--red-soft); }
+  .card-body {
+    padding: 16px 28px 24px;
+  }
+  /* ── Overview ── */
+  .overview-text {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--gray-600);
+  }
+  /* ── Feature Table ── */
+  .feature-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .feature-table thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-400);
+    padding: 12px 20px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .feature-table thead th:not(:first-child) {
+    text-align: center;
+    width: 140px;
+  }
+  .feature-table tbody td {
+    padding: 11px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    font-weight: 500;
+    color: var(--navy);
+  }
+  .feature-table tbody td:not(:first-child) {
+    text-align: center;
+  }
+  .feature-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .feature-table tbody tr:hover {
+    background: var(--gray-50);
+  }
+  .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(74,206,150,0.12);
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .cross {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255,107,107,0.12);
+    color: var(--red-soft);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-q2 {
+    display: inline-block;
+    background: rgba(16,164,255,0.1);
+    color: var(--blue);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  /* ── Two Column ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .col-card {
+    border-radius: 12px;
+    padding: 24px 28px;
+    border: 1px solid var(--gray-200);
+  }
+  .col-card.shoptin {
+    background: var(--gray-50);
+  }
+  .col-card.dataships {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 100%);
+    border-color: transparent;
+  }
+  .col-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: -0.1px;
+  }
+  .col-card.shoptin h3 { color: var(--gray-400); }
+  .col-card.dataships h3 { color: var(--green); }
+  .col-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .col-card ul li {
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 5px 0;
+    padding-left: 18px;
+    position: relative;
+  }
+  .col-card.shoptin ul li {
+    color: var(--gray-600);
+  }
+  .col-card.shoptin ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--gray-400);
+    font-weight: 600;
+  }
+  .col-card.dataships ul li {
+    color: rgba(255,255,255,0.85);
+  }
+  .col-card.dataships ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-weight: 600;
+  }
+  /* ── TLDR ── */
+  .tldr-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .tldr-item:last-child { border-bottom: none; }
+  .tldr-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--navy-deep);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .tldr-content {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--gray-600);
+  }
+  .tldr-content strong {
+    color: var(--navy-deep);
+    font-weight: 600;
+  }
+  .sub-points {
+    margin-top: 8px;
+    padding-left: 0;
+    list-style: none;
+  }
+  .sub-points li {
+    font-size: 12.5px;
+    color: var(--gray-600);
+    padding: 3px 0 3px 16px;
+    position: relative;
+  }
+  .sub-points li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue);
+    position: absolute;
+    left: 0;
+    top: 10px;
+  }
+  /* ── Objection ── */
+  .objection-block {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+  }
+  .objection-block:last-child { margin-bottom: 0; }
+  .objection-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--red-soft);
+    margin-bottom: 6px;
+  }
+  .objection-q {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy-deep);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .answer-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .objection-a {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-600);
+  }
+  /* ── Killer Questions ── */
+  .killer-q {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    gap: 14px;
+  }
+  .killer-q:last-child { border-bottom: none; }
+  .killer-q-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(16,164,255,0.1);
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .killer-q-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--navy-deep);
+    font-weight: 500;
+  }
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 20px 0 8px;
+    font-size: 11px;
+    color: var(--gray-400);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  @media print {
+    body { background: white; }
+    .page { padding: 16px; max-width: 100%; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-label">Sales Battlecard</div>
+    <div class="header-title">Shoptin</div>
+    <div class="header-subtitle">Internal use only — Dataships Sales Enablement</div>
+    <div class="header-badge">Low Threat · Email-Only · SMB Segment</div>
+  </div>
+  <!-- Overview -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon icon-blue">◎</div>
+      <h2>Competitor Overview</h2>
+    </div>
+    <div class="card-body">
+      <p class="overview-text">
+        A Shopify checkout app that uses region-specific consent messaging to increase email opt-in rates. Positions itself as a lightweight, no-code install that runs optimized consent language against Shopify's default, with built-in A/B testing tracked through Shopify reports. Claims consent messaging updates automatically as regulations change.
+      </p>
+    </div>
+  </div>
+  <!-- Feature Compare -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon icon-green">⚖</div>
+      <h2>Feature Comparison</h2>
+    </div>
+    <div class="card-body" style="padding-left:0; padding-right:0;">
+      <table class="feature-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Dataships</th>
+            <th>Shoptin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Channel: Email</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Channel: SMS</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>Channel: WhatsApp</td>
+            <td><span class="badge-q2">Q2</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>A/B Testing</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>SOC2 Compliant</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>Consent Memory</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>AI/ML Optimization Model</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>Region-only consent</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Dedicated Customer Success</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>Klaviyo Integration</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Attentive Integration</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td>Forms Integration</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Why Shoptin vs Why Dataships -->
+  <div class="two-col">
+    <div class="col-card shoptin">
+      <h3>Why they pick Shoptin</h3>
+      <ul>
+        <li>SMB segment</li>
+        <li>Cares only about cost</li>
+        <li>Comfortable with single-channel (email)</li>
+        <li>Comfortable trusting compliance decisions to non-enterprise grade tool</li>
+        <li>Comfortable using simple single-purpose tech</li>
+      </ul>
+    </div>
+    <div class="col-card dataships">
+      <h3>Why they pick Dataships</h3>
+      <ul>
+        <li>Mid-market / Enterprise</li>
+        <li>Happy to pay for value with clear ROI</li>
+        <li>Needs multi-channel (email, SMS, WhatsApp)</li>
+        <li>Wants SOC2-certified compliance tech</li>
+        <li>Interested in AI innovation</li>
+      </ul>
+    </div>
+  </div>
+  <!-- TLDR Why Dataships -->
+  <div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+      <div class="icon icon-navy">⚡</div>
+      <h2>TLDR: Why Dataships Wins</h2>
+    </div>
+    <div class="card-body">
+      <div class="tldr-item">
+        <div class="tldr-num">1</div>
+        <div class="tldr-content">
+          <strong>Category creator, 12–18 months ahead.</strong> We are well funded and ahead of every competitor in the consent optimization category.
+          <ul class="sub-points">
+            <li>Significant resources across product, compliance, and customer success</li>
+            <li>An aggressive, AI-forward innovation roadmap</li>
+            <li>SOC2 compliance and indemnity coverage</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tldr-item">
+        <div class="tldr-num">2</div>
+        <div class="tldr-content">
+          <strong>More breadth, more depth.</strong> More channels, more integrations, wider collection-point remit — plus AI/ML models, better reporting, and dedicated success teams.
+        </div>
+      </div>
+      <div class="tldr-item">
+        <div class="tldr-num">3</div>
+        <div class="tldr-content">
+          <strong>Proven at scale.</strong> 600+ brands, dozens of case studies, reviews, and testimonials, and an industry benchmark report on our performance data. Shoptin has ~12 customers and no published results.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Objection Handling -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon icon-red">⟡</div>
+      <h2>Objection Handling</h2>
+    </div>
+    <div class="card-body">
+      <div class="objection-block">
+        <div class="objection-label">Objection</div>
+        <div class="objection-q">"Shoptin is way cheaper."</div>
+        <div class="answer-label">Your answer</div>
+        <p class="objection-a">
+          It's true that Shoptin's base pricing is lower. Their value is also significantly lower. Dataships' price may be higher, but we guarantee a minimum 5X return on investment — and on average see multiples higher than that. The breadth and depth of our platform, our security and compliance standing, and our performance pedigree justify our pricing as an enterprise-grade tool.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Killer Questions -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon icon-blue">?</div>
+      <h2>Killer Questions</h2>
+    </div>
+    <div class="card-body">
+      <div class="killer-q">
+        <div class="killer-q-icon">1</div>
+        <div class="killer-q-text">
+          Would your founders, legal team, or legal advisors be comfortable trusting compliance infrastructure to vibe-coded tools that aren't SOC2 certified?
+        </div>
+      </div>
+      <div class="killer-q">
+        <div class="killer-q-icon">2</div>
+        <div class="killer-q-text">
+          Do you view consent and privacy compliance as an integral piece of your retention infrastructure deserving of investment, strategic oversight, and a well-funded success team? Or do you only want single-channel quick wins?
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">DATASHIPS · INTERNAL · SALES ENABLEMENT</div>
+</div>
+</body>
+</html>
