@@ -45,3 +45,5 @@ Every case study follows this arc:
 - Connect opt-in improvements to downstream revenue: never leave the story at "higher opt-ins"
 - Reference the A/B test as proof methodology: we show our work
 - Keep the total word count between 600-900 words. These are results briefs, not whitepapers
+- When referring to Dataships, use the approved terminology from the positioning guide: "consent optimization platform" or "consent infrastructure." Never invent alternative descriptors like "dynamic consent platform," "consent engine," or "consent tool"
+- Enforce the em dash limit strictly in case studies. Maximum 2-3 per piece. Case studies are particularly prone to em dash overuse because of the before/after and parenthetical data patterns. Rewrite using commas, colons, periods, or parentheses instead
