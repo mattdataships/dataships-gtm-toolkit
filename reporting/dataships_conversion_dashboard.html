@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataships Sales Pipeline — Conversion Rate Dashboard</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: #1a1d27;
+            --border: #2a2d3a;
+            --text: #e4e4e7;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,0.1);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.1);
+            --yellow: #eab308;
+            --yellow-bg: rgba(234,179,8,0.1);
+            --blue: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-light), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .kpi-card .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .kpi-card .kpi-value.green { color: var(--green); }
+        .kpi-card .kpi-value.red { color: var(--red); }
+        .kpi-card .kpi-value.yellow { color: var(--yellow); }
+
+        .kpi-card .kpi-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .kpi-card .kpi-detail {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .section .section-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: rgba(99,102,241,0.1);
+            color: var(--accent-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--border);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tr:hover {
+            background: rgba(99,102,241,0.05);
+        }
+
+        .data-table tr.lost-row {
+            background: var(--red-bg);
+        }
+
+        .data-table tr.info-row {
+            background: rgba(59,130,246,0.08);
+        }
+
+        .data-table .good { color: var(--green); font-weight: 600; }
+        .data-table .warn { color: var(--yellow); font-weight: 600; }
+        .data-table .bad { color: var(--red); font-weight: 600; }
+
+        .data-table.compact td { padding: 6px 8px; font-size: 12px; }
+        .data-table.compact th { padding: 8px; font-size: 10px; }
+
+        .data-table td.na-cell { color: var(--text-muted); font-style: italic; opacity: 0.6; }
+
+        .cohort tr.mature { }
+        .cohort tr.maturing { opacity: 0.85; }
+        .cohort tr.immature { opacity: 0.6; }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.mature { background: var(--green); }
+        .legend-dot.maturing { background: var(--yellow); }
+        .legend-dot.immature { background: var(--text-muted); }
+
+        .callout {
+            background: rgba(99,102,241,0.08);
+            border-left: 3px solid var(--accent);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+        }
+
+        .callout strong { color: var(--accent-light); }
+
+        .tab-container {
+            margin-bottom: 16px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+        .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .funnel-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .funnel-label {
+            width: 160px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: right;
+            padding-right: 12px;
+        }
+
+        .funnel-track {
+            flex: 1;
+            height: 32px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .funnel-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            transition: width 0.5s ease;
+        }
+
+        .funnel-fill.s0 { background: linear-gradient(90deg, #6366f1, #818cf8); }
+        .funnel-fill.s1 { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .funnel-fill.s2 { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+        .funnel-fill.s3 { background: linear-gradient(90deg, #14b8a6, #2dd4bf); }
+        .funnel-fill.s4 { background: linear-gradient(90deg, #22c55e, #4ade80); }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .scroll-x {
+            overflow-x: auto;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Dataships Sales Pipeline — Conversion Dashboard</h1>
+    <div class="subtitle">
+        709 deals created Jan 2025 – Feb 2026 &nbsp;|&nbsp;
+        $545.7K total pipeline &nbsp;|&nbsp;
+        Generated Feb 13, 2026
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-value">709</div>
+        <div class="kpi-label">Total Deals</div>
+        <div class="kpi-detail">Jan 2025 – present</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value green">111</div>
+        <div class="kpi-label">Closed Won</div>
+        <div class="kpi-detail">$128.4K revenue</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value red">481</div>
+        <div class="kpi-label">Closed Lost</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value">117</div>
+        <div class="kpi-label">Still Open</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value yellow">18.8%</div>
+        <div class="kpi-label">Win Rate (All Closed)</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value green">20.0%</div>
+        <div class="kpi-label">Win Rate (Mature Cohorts)</div>
+        <div class="kpi-detail">&gt;70% resolved</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value">$1.2K</div>
+        <div class="kpi-label">Avg Won Deal Size</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-value">29.0%</div>
+        <div class="kpi-label">Revenue Conv (Mature)</div>
+        <div class="kpi-detail">Pipeline $ → Won $</div>
+    </div>
+</div>
+
+<!-- Visual Funnel -->
+<div class="section">
+    <h2>Pipeline Funnel — Deal Volume</h2>
+    <div class="section-desc">How many deals reached each stage (as % of total pipeline entry)</div>
+    <div style="max-width: 800px;">
+
+        <div class="funnel-bar">
+            <div class="funnel-label">Demo Scheduled (SQL)</div>
+            <div class="funnel-track">
+                <div class="funnel-fill s0" style="width: 98.16643159379407%">
+                    696 (98.2%)
+                </div>
+            </div>
+        </div>
+        <div class="funnel-bar">
+            <div class="funnel-label">Demo Held (SQO)</div>
+            <div class="funnel-track">
+                <div class="funnel-fill s1" style="width: 76.4456981664316%">
+                    542 (76.4%)
+                </div>
+            </div>
+        </div>
+        <div class="funnel-bar">
+            <div class="funnel-label">Onboarded (SQO)</div>
+            <div class="funnel-track">
+                <div class="funnel-fill s2" style="width: 32.86318758815233%">
+                    233 (32.9%)
+                </div>
+            </div>
+        </div>
+        <div class="funnel-bar">
+            <div class="funnel-label">Negotiation (SQO)</div>
+            <div class="funnel-track">
+                <div class="funnel-fill s3" style="width: 25.24682651622003%">
+                    179 (25.2%)
+                </div>
+            </div>
+        </div>
+        <div class="funnel-bar">
+            <div class="funnel-label">Closed Won</div>
+            <div class="funnel-track">
+                <div class="funnel-fill s4" style="width: 15.796897038081806%">
+                    112 (15.8%)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overall Funnel Table -->
+<div class="section">
+    <h2>Overall Stage-to-Stage Conversion</h2>
+    <div class="section-desc">
+        Volume and revenue conversion at each pipeline stage. "% of Top" = cumulative from pipeline entry.
+        "Stage→Stage" = conversion between consecutive stages.
+    </div>
+<table class="data-table">
+            <thead>
+                <tr>
+                    <th>Stage</th>
+                    <th>Deals</th>
+                    <th>% of Top</th>
+                    <th>Stage→Stage</th>
+                    <th>Pipeline $</th>
+                    <th>% of Top $</th>
+                    <th>Stage→Stage $</th>
+                </tr>
+            </thead>
+            <tbody><tr>
+                    <td><strong>Demo Scheduled (SQL)</strong></td>
+                    <td>696</td>
+                    <td>98.2%</td>
+                    <td>100.0%</td>
+                    <td>$524.9K</td>
+                    <td>96.2%</td>
+                    <td>100.0%</td>
+                </tr><tr>
+                    <td><strong>Demo Held (SQO)</strong></td>
+                    <td>542</td>
+                    <td>76.4%</td>
+                    <td>77.9%</td>
+                    <td>$529.1K</td>
+                    <td>97.0%</td>
+                    <td>100.8%</td>
+                </tr><tr>
+                    <td><strong>Onboarded (SQO)</strong></td>
+                    <td>233</td>
+                    <td>32.9%</td>
+                    <td>43.0%</td>
+                    <td>$248.4K</td>
+                    <td>45.5%</td>
+                    <td>46.9%</td>
+                </tr><tr>
+                    <td><strong>Negotiation (SQO)</strong></td>
+                    <td>179</td>
+                    <td>25.2%</td>
+                    <td>76.8%</td>
+                    <td>$204.4K</td>
+                    <td>37.5%</td>
+                    <td>82.3%</td>
+                </tr><tr>
+                    <td><strong>Closed Won</strong></td>
+                    <td>112</td>
+                    <td>15.8%</td>
+                    <td>62.6%</td>
+                    <td>$128.6K</td>
+                    <td>23.6%</td>
+                    <td>62.9%</td>
+                </tr><tr class="lost-row">
+                    <td>Closed Lost</td>
+                    <td>481</td>
+                    <td>67.8%</td>
+                    <td>—</td>
+                    <td>$312.5K</td>
+                    <td>57.3%</td>
+                    <td>—</td>
+                </tr><tr class="info-row">
+                    <td>Still Open</td>
+                    <td>117</td>
+                    <td>16.5%</td>
+                    <td>—</td>
+                    <td>$104.9K</td>
+                    <td>19.2%</td>
+                    <td>—</td>
+                </tr></tbody>
+        </table>
+    <div class="callout" style="margin-top: 16px;">
+        <strong>Reading this table:</strong> "% of Top" shows what fraction of ALL deals entering the pipeline reached each stage.
+        "Stage→Stage" shows the conversion between consecutive stages (e.g., of deals that had a Demo Held, what % got Onboarded?).
+        Revenue columns show the same but weighted by deal amount — so a $3K deal "counts more" than a $750 deal.
+    </div>
+</div>
+
+<!-- By Deal Type -->
+<div class="section">
+    <h2>Conversion by Deal Type</h2>
+    <div class="section-desc">Win rates and funnel progression compared across deal source types</div>
+<table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>Deal Type</th>
+                    <th>Total<br>Deals</th>
+                    <th>→Demo<br>Held</th>
+                    <th>→Onboard</th>
+                    <th>→Negot.</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Win Rate<br>(Closed)</th>
+                    <th>SQL→Won<br>(All)</th>
+                    <th>Pipeline $</th>
+                    <th>Won $<br>(MRR)</th>
+                    <th>Rev Conv</th>
+                    
+                </tr>
+            </thead>
+            <tbody><tr>
+                <td><strong>Marketing</strong></td>
+                <td>464</td>
+                <td>73.9%</td>
+                <td>23.3%</td>
+                <td>17.2%</td>
+                <td>41</td>
+                <td>334</td>
+                <td class="bad">10.9%</td>
+                <td>8.8%</td>
+                <td>$338.4K</td>
+                <td>$50.4K</td>
+                <td>14.9%</td>
+                
+            </tr><tr>
+                <td><strong>Partnerships</strong></td>
+                <td>151</td>
+                <td>89.4%</td>
+                <td>55.0%</td>
+                <td>41.7%</td>
+                <td>45</td>
+                <td>92</td>
+                <td class="good">32.8%</td>
+                <td>29.8%</td>
+                <td>$117.8K</td>
+                <td>$44.6K</td>
+                <td>37.9%</td>
+                
+            </tr><tr>
+                <td><strong>Sales</strong></td>
+                <td>81</td>
+                <td>79.0%</td>
+                <td>50.6%</td>
+                <td>44.4%</td>
+                <td>26</td>
+                <td>54</td>
+                <td class="good">32.5%</td>
+                <td>32.1%</td>
+                <td>$68.7K</td>
+                <td>$33.5K</td>
+                <td>48.8%</td>
+                
+            </tr><tr>
+                <td><strong>Unknown</strong></td>
+                <td>0</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0</td>
+                <td>1</td>
+                <td class="bad">0.0%</td>
+                <td>0.0%</td>
+                <td>$0</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                
+            </tr></tbody>
+        </table></div>
+<div class="section">
+    <h2>Conversion by Deal Type — Sub-Category</h2>
+    <div class="section-desc">Granular view by sub-category. Sorted by volume. Spend/CAC/ROI shown where data is available; N/A where not tracked.
+    <br>Won $ is MRR. ROI = (ARR from wins − spend) / spend. CAC = total spend / customers won.</div>
+    <div class="scroll-x">
+<table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>Sub-Category</th>
+                    <th>Total<br>Deals</th>
+                    <th>→Demo<br>Held</th>
+                    <th>→Onboard</th>
+                    <th>→Negot.</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Win Rate<br>(Closed)</th>
+                    <th>SQL→Won<br>(All)</th>
+                    <th>Pipeline $</th>
+                    <th>Won $<br>(MRR)</th>
+                    <th>Rev Conv</th>
+                    
+                    <th>Total<br>Spend</th>
+                    <th>Cost per<br>SQL</th>
+                    <th>CAC</th>
+                    <th>ROI<br>(ARR-based)</th>
+                </tr>
+            </thead>
+            <tbody><tr>
+                <td><strong>Marketing-DTConnect-Matchmaking</strong></td>
+                <td>69</td>
+                <td>95.7%</td>
+                <td>21.7%</td>
+                <td>13.0%</td>
+                <td>1</td>
+                <td>25</td>
+                <td class="bad">3.8%</td>
+                <td>1.4%</td>
+                <td>$74.2K</td>
+                <td>$2.0K</td>
+                <td>2.7%</td>
+                <td>$113.0K</td><td>$1.6K</td><td>$113.0K</td><td class="bad">-79%</td>
+            </tr><tr>
+                <td><strong>Marketing-EXN-Matchmaking</strong></td>
+                <td>1</td>
+                <td>100.0%</td>
+                <td>100.0%</td>
+                <td>0.0%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="bad">—</td>
+                <td>0.0%</td>
+                <td>$3.5K</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Marketing-Events</strong></td>
+                <td>24</td>
+                <td>116.7%</td>
+                <td>75.0%</td>
+                <td>62.5%</td>
+                <td>8</td>
+                <td>15</td>
+                <td class="good">34.8%</td>
+                <td>33.3%</td>
+                <td>$36.5K</td>
+                <td>$12.6K</td>
+                <td>34.4%</td>
+                <td>$141.0K</td><td>$4.9K</td><td>$17.6K</td><td class="warn">+7%</td>
+            </tr><tr>
+                <td><strong>Marketing-GROW-Matchmaking</strong></td>
+                <td>19</td>
+                <td>94.7%</td>
+                <td>15.8%</td>
+                <td>10.5%</td>
+                <td>1</td>
+                <td>18</td>
+                <td class="bad">5.3%</td>
+                <td>5.3%</td>
+                <td>$14.0K</td>
+                <td>$500</td>
+                <td>3.6%</td>
+                <td>$12.5K</td><td>$658</td><td>$12.5K</td><td class="bad">-52%</td>
+            </tr><tr>
+                <td><strong>Marketing-Inbound</strong></td>
+                <td>46</td>
+                <td>78.3%</td>
+                <td>47.8%</td>
+                <td>32.6%</td>
+                <td>9</td>
+                <td>28</td>
+                <td class="warn">24.3%</td>
+                <td>19.6%</td>
+                <td>$31.7K</td>
+                <td>$9.3K</td>
+                <td>29.2%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Marketing-LMV-Matchmaking</strong></td>
+                <td>8</td>
+                <td>112.5%</td>
+                <td>37.5%</td>
+                <td>37.5%</td>
+                <td>2</td>
+                <td>4</td>
+                <td class="good">33.3%</td>
+                <td>25.0%</td>
+                <td>$7.2K</td>
+                <td>$1.0K</td>
+                <td>13.9%</td>
+                <td>$27.6K</td><td>$3.1K</td><td>$13.8K</td><td class="bad">-57%</td>
+            </tr><tr>
+                <td><strong>Marketing-Outbound</strong></td>
+                <td>2</td>
+                <td>100.0%</td>
+                <td>50.0%</td>
+                <td>50.0%</td>
+                <td>0</td>
+                <td>1</td>
+                <td class="bad">0.0%</td>
+                <td>0.0%</td>
+                <td>$4.5K</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Marketing-Paid-Campaign</strong></td>
+                <td>211</td>
+                <td>84.8%</td>
+                <td>19.9%</td>
+                <td>15.6%</td>
+                <td>18</td>
+                <td>177</td>
+                <td class="bad">9.2%</td>
+                <td>8.5%</td>
+                <td>$165.7K</td>
+                <td>$24.9K</td>
+                <td>15.0%</td>
+                <td>$199.1K</td><td>$944</td><td>$11.1K</td><td class="warn">+50%</td>
+            </tr><tr>
+                <td><strong>Outbound - Cold Calling</strong></td>
+                <td>13</td>
+                <td>84.6%</td>
+                <td>46.2%</td>
+                <td>38.5%</td>
+                <td>5</td>
+                <td>8</td>
+                <td class="good">38.5%</td>
+                <td>38.5%</td>
+                <td>$8.2K</td>
+                <td>$5.0K</td>
+                <td>60.8%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Outbound - Senders</strong></td>
+                <td>2</td>
+                <td>100.0%</td>
+                <td>50.0%</td>
+                <td>0.0%</td>
+                <td>1</td>
+                <td>1</td>
+                <td class="good">50.0%</td>
+                <td>50.0%</td>
+                <td>$2.1K</td>
+                <td>$112</td>
+                <td>5.3%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>PLS-Other</strong></td>
+                <td>81</td>
+                <td>2.5%</td>
+                <td>1.2%</td>
+                <td>0.0%</td>
+                <td>0</td>
+                <td>66</td>
+                <td class="bad">0.0%</td>
+                <td>0.0%</td>
+                <td>$890</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Partnership-Free-trial</strong></td>
+                <td>1</td>
+                <td>100.0%</td>
+                <td>100.0%</td>
+                <td>100.0%</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="good">100.0%</td>
+                <td>100.0%</td>
+                <td>$0</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Partnerships-Event</strong></td>
+                <td>23</td>
+                <td>91.3%</td>
+                <td>47.8%</td>
+                <td>39.1%</td>
+                <td>7</td>
+                <td>15</td>
+                <td class="good">31.8%</td>
+                <td>30.4%</td>
+                <td>$16.2K</td>
+                <td>$4.5K</td>
+                <td>27.7%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Partnerships-Referral</strong></td>
+                <td>127</td>
+                <td>89.0%</td>
+                <td>55.9%</td>
+                <td>41.7%</td>
+                <td>37</td>
+                <td>77</td>
+                <td class="good">32.5%</td>
+                <td>29.1%</td>
+                <td>$101.6K</td>
+                <td>$40.1K</td>
+                <td>39.5%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Sales - AE Generated</strong></td>
+                <td>47</td>
+                <td>91.5%</td>
+                <td>66.0%</td>
+                <td>61.7%</td>
+                <td>19</td>
+                <td>25</td>
+                <td class="good">43.2%</td>
+                <td>40.4%</td>
+                <td>$52.2K</td>
+                <td>$28.2K</td>
+                <td>54.1%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Sales-HappyStack</strong></td>
+                <td>12</td>
+                <td>58.3%</td>
+                <td>16.7%</td>
+                <td>16.7%</td>
+                <td>1</td>
+                <td>11</td>
+                <td class="bad">8.3%</td>
+                <td>8.3%</td>
+                <td>$5.2K</td>
+                <td>$200</td>
+                <td>3.8%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>Unknown</strong></td>
+                <td>9</td>
+                <td>33.3%</td>
+                <td>33.3%</td>
+                <td>11.1%</td>
+                <td>1</td>
+                <td>10</td>
+                <td class="bad">9.1%</td>
+                <td>11.1%</td>
+                <td>$1.2K</td>
+                <td>$199</td>
+                <td>16.6%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>marketing_sessionary</strong></td>
+                <td>1</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="bad">—</td>
+                <td>0.0%</td>
+                <td>$0</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr><tr>
+                <td><strong>sales-aditionalstore</strong></td>
+                <td>0</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="good">100.0%</td>
+                <td>0.0%</td>
+                <td>$0</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td><td class='na-cell'>N/A</td>
+            </tr></tbody>
+        </table></div></div>
+<div class="section">
+    <h2>Channel Economics — Spend, CAC & ROI</h2>
+    <div class="section-desc">
+        Marketing spend mapped to deal sub-categories. Won $ is MRR; ARR = MRR × 12.
+        <br><strong>CAC</strong> = total channel spend / customers won. <strong>ROI</strong> = (ARR from wins − spend) / spend.
+        <br>Only channels with tracked spend shown. Partnerships, Sales, and other channels without tracked spend are N/A in the sub-category table above.
+    </div>
+    <div class="scroll-x">
+    <table class="data-table compact">
+        <thead>
+            <tr>
+                <th>Channel</th>
+                <th>Total<br>Spend</th>
+                <th>Deals<br>Created</th>
+                <th>Cost per<br>SQL</th>
+                <th>Won</th>
+                <th>Win Rate</th>
+                <th>CAC</th>
+                <th>Won MRR</th>
+                <th>Won ARR</th>
+                <th>ROI</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+                <td><strong>Marketing-Paid-Campaign</strong></td>
+                <td>$199.1K</td>
+                <td>211</td>
+                <td>$944</td>
+                <td>18</td>
+                <td class="bad">9.2%</td>
+                <td>$11.1K</td>
+                <td>$24.9K</td>
+                <td>$298.3K</td>
+                <td class="warn">+50% </td>
+            </tr><tr>
+                <td><strong>Marketing-Events</strong></td>
+                <td>$141.0K</td>
+                <td>29</td>
+                <td>$4.9K</td>
+                <td>8</td>
+                <td class="good">34.8%</td>
+                <td>$17.6K</td>
+                <td>$12.6K</td>
+                <td>$150.7K</td>
+                <td class="warn">+7% </td>
+            </tr><tr>
+                <td><strong>Marketing-DTConnect-Matchmaking</strong></td>
+                <td>$113.0K</td>
+                <td>69</td>
+                <td>$1.6K</td>
+                <td>1</td>
+                <td class="bad">3.8%</td>
+                <td>$113.0K</td>
+                <td>$2.0K</td>
+                <td>$24.0K</td>
+                <td class="bad">-79% </td>
+            </tr><tr>
+                <td><strong>Marketing-LMV-Matchmaking</strong></td>
+                <td>$27.6K</td>
+                <td>9</td>
+                <td>$3.1K</td>
+                <td>2</td>
+                <td class="good">33.3%</td>
+                <td>$13.8K</td>
+                <td>$1.0K</td>
+                <td>$12.0K</td>
+                <td class="bad">-57% </td>
+            </tr><tr>
+                <td><strong>Marketing-GROW-Matchmaking</strong></td>
+                <td>$12.5K</td>
+                <td>19</td>
+                <td>$658</td>
+                <td>1</td>
+                <td class="bad">5.3%</td>
+                <td>$12.5K</td>
+                <td>$500</td>
+                <td>$6.0K</td>
+                <td class="bad">-52% </td>
+            </tr><tr style="border-top: 2px solid var(--accent); font-weight: 600;">
+            <td><strong>TOTAL (tracked)</strong></td>
+            <td>$493.2K</td>
+            <td>337</td>
+            <td>$1.5K</td>
+            <td>30</td>
+            <td>11.2%</td>
+            <td>$16.4K</td>
+            <td>$40.9K</td>
+            <td>$491.0K</td>
+            <td class="bad">-0%</td>
+        </tr></tbody>
+    </table>
+    </div>
+    <div class="callout" style="margin-top: 16px;">
+        <strong>How to read ROI:</strong> +100% means you earned 2x what you spent (ARR basis, year 1).
+        A positive ROI means the channel pays for itself in year 1 from ARR alone; negative means it takes longer than 12 months to recoup.
+        <br>LinkedIn+Vouchers/Tremendous+Meta are grouped as "Paid Campaign". Spend includes all tracked programs (excl. contractors, swag, experiments).
+    </div>
+</div>
+
+<div class="section">
+    <h2>Conversion by Account Executive</h2>
+    <div class="section-desc">Active AEs only. Shows pipeline progression and win rates per rep. "Q4 2025" column shows win rate for deals <strong>created</strong> in Q4 2025 only (with W/L/Open breakdown).</div>
+<table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>AE</th>
+                    <th>Total<br>Deals</th>
+                    <th>→Demo<br>Held</th>
+                    <th>→Onboard</th>
+                    <th>→Negot.</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Win Rate<br>(All Time)</th>
+                    <th>Win Rate<br>(Q4 2025)</th>
+                    <th>SQL→Won<br>(All)</th>
+                    <th>Pipeline $</th>
+                    <th>Won $</th>
+                    <th>Rev Conv</th>
+                </tr>
+            </thead>
+            <tbody><tr>
+                <td><strong>Conor Mahony</strong></td>
+                <td>249</td>
+                <td>84.3%</td>
+                <td>39.4%</td>
+                <td>32.1%</td>
+                <td>48</td>
+                <td>169</td>
+                <td class="warn">22.1%</td>
+                <td class="warn" title="(10W/37L/2O of 49)">21.3%<br><span style="font-size:10px;opacity:0.7;">(10W/37L/2O of 49)</span></td>
+                <td>19.3%</td>
+                <td>$178.4K</td>
+                <td>$36.3K</td>
+                <td>20.4%</td>
+            </tr><tr>
+                <td><strong>Satru Rahmat</strong></td>
+                <td>160</td>
+                <td>80.6%</td>
+                <td>25.6%</td>
+                <td>14.4%</td>
+                <td>12</td>
+                <td>102</td>
+                <td class="bad">10.5%</td>
+                <td class="warn" title="(7W/35L/7O of 49)">16.7% ↑<br><span style="font-size:10px;opacity:0.7;">(7W/35L/7O of 49)</span></td>
+                <td>7.5%</td>
+                <td>$127.5K</td>
+                <td>$20.1K</td>
+                <td>15.7%</td>
+            </tr><tr>
+                <td><strong>Tyrone Kane</strong></td>
+                <td>219</td>
+                <td>77.2%</td>
+                <td>36.1%</td>
+                <td>28.3%</td>
+                <td>43</td>
+                <td>158</td>
+                <td class="warn">21.4%</td>
+                <td class="warn" title="(9W/30L/3O of 42)">23.1%<br><span style="font-size:10px;opacity:0.7;">(9W/30L/3O of 42)</span></td>
+                <td>19.6%</td>
+                <td>$178.8K</td>
+                <td>$58.3K</td>
+                <td>32.6%</td>
+            </tr></tbody>
+        </table></div>
+<div class="section">
+    <h2>Monthly Cohort Analysis — Create Date</h2>
+    <div class="section-desc">
+        Deals grouped by the month they were <strong>created</strong>. This is your "true conversion rate" view —
+        each cohort is a fixed set of deals, so new pipeline additions don't distort the numbers.
+        <br>Mature cohorts (&gt;70% resolved) give the most reliable win rates. Immature cohorts are faded.
+    </div>
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot mature"></div> Mature (&gt;70% resolved)</div>
+        <div class="legend-item"><div class="legend-dot maturing"></div> Maturing (40-70%)</div>
+        <div class="legend-item"><div class="legend-dot immature"></div> Immature (&lt;40%)</div>
+    </div>
+    <div class="scroll-x">
+<table class="data-table cohort">
+            <thead>
+                <tr>
+                    <th>Cohort</th>
+                    <th>Created</th>
+                    <th>→Demo<br>Held</th>
+                    <th>→Onboard</th>
+                    <th>→Negot.</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Open</th>
+                    <th>%&nbsp;Resolved</th>
+                    <th>Win Rate<br>(Vol)</th>
+                    <th>Pipeline $</th>
+                    <th>Won $</th>
+                    <th>Win Rate<br>(Rev)</th>
+                    
+                    <th>Mktg<br>Spend</th>
+                    <th>Cohort<br>CAC</th>
+                </tr>
+            </thead>
+            <tbody><tr class="mature">
+                <td><strong>Jan 2025</strong></td>
+                <td>34</td>
+                <td>79.4%</td>
+                <td>58.8%</td>
+                <td>38.2%</td>
+                <td>13</td>
+                <td>20</td>
+                <td>1</td>
+                <td>97.1%</td>
+                <td>39.4%</td>
+                <td>$19.8K</td>
+                <td>$7.0K</td>
+                <td>35.3%</td>
+                <td>$4.0K</td>
+                <td>$308</td>
+            </tr><tr class="mature">
+                <td><strong>Feb 2025</strong></td>
+                <td>38</td>
+                <td>89.5%</td>
+                <td>26.3%</td>
+                <td>23.7%</td>
+                <td>9</td>
+                <td>29</td>
+                <td>0</td>
+                <td>100.0%</td>
+                <td>23.7%</td>
+                <td>$26.5K</td>
+                <td>$9.0K</td>
+                <td>33.9%</td>
+                <td>$5.2K</td>
+                <td>$576</td>
+            </tr><tr class="mature">
+                <td><strong>Mar 2025</strong></td>
+                <td>47</td>
+                <td>74.5%</td>
+                <td>34.0%</td>
+                <td>29.8%</td>
+                <td>8</td>
+                <td>39</td>
+                <td>0</td>
+                <td>100.0%</td>
+                <td>17.0%</td>
+                <td>$30.8K</td>
+                <td>$3.7K</td>
+                <td>12.2%</td>
+                <td>$34.2K</td>
+                <td>$4.3K</td>
+            </tr><tr class="mature">
+                <td><strong>Apr 2025</strong></td>
+                <td>48</td>
+                <td>75.0%</td>
+                <td>31.2%</td>
+                <td>29.2%</td>
+                <td>10</td>
+                <td>38</td>
+                <td>0</td>
+                <td>100.0%</td>
+                <td>20.8%</td>
+                <td>$50.0K</td>
+                <td>$11.5K</td>
+                <td>23.1%</td>
+                <td>$11.4K</td>
+                <td>$1.1K</td>
+            </tr><tr class="mature">
+                <td><strong>May 2025</strong></td>
+                <td>44</td>
+                <td>81.8%</td>
+                <td>38.6%</td>
+                <td>34.1%</td>
+                <td>11</td>
+                <td>33</td>
+                <td>0</td>
+                <td>100.0%</td>
+                <td>25.0%</td>
+                <td>$31.2K</td>
+                <td>$12.0K</td>
+                <td>38.4%</td>
+                <td>$14.0K</td>
+                <td>$1.3K</td>
+            </tr><tr class="mature">
+                <td><strong>Jun 2025</strong></td>
+                <td>41</td>
+                <td>80.5%</td>
+                <td>41.5%</td>
+                <td>34.1%</td>
+                <td>5</td>
+                <td>36</td>
+                <td>0</td>
+                <td>100.0%</td>
+                <td>12.2%</td>
+                <td>$18.7K</td>
+                <td>$953</td>
+                <td>5.1%</td>
+                <td>$12.5K</td>
+                <td>$2.5K</td>
+            </tr><tr class="mature">
+                <td><strong>Jul 2025</strong></td>
+                <td>51</td>
+                <td>70.6%</td>
+                <td>35.3%</td>
+                <td>27.5%</td>
+                <td>8</td>
+                <td>42</td>
+                <td>1</td>
+                <td>98.0%</td>
+                <td>16.0%</td>
+                <td>$47.4K</td>
+                <td>$19.3K</td>
+                <td>40.7%</td>
+                <td>$41.7K</td>
+                <td>$5.2K</td>
+            </tr><tr class="mature">
+                <td><strong>Aug 2025</strong></td>
+                <td>57</td>
+                <td>82.5%</td>
+                <td>38.6%</td>
+                <td>29.8%</td>
+                <td>12</td>
+                <td>43</td>
+                <td>2</td>
+                <td>96.5%</td>
+                <td>21.8%</td>
+                <td>$51.6K</td>
+                <td>$16.0K</td>
+                <td>31.0%</td>
+                <td>$44.9K</td>
+                <td>$3.7K</td>
+            </tr><tr class="mature">
+                <td><strong>Sep 2025</strong></td>
+                <td>58</td>
+                <td>84.5%</td>
+                <td>41.4%</td>
+                <td>25.9%</td>
+                <td>7</td>
+                <td>49</td>
+                <td>2</td>
+                <td>96.6%</td>
+                <td>12.5%</td>
+                <td>$51.2K</td>
+                <td>$10.1K</td>
+                <td>19.6%</td>
+                <td>$25.3K</td>
+                <td>$3.6K</td>
+            </tr><tr class="mature">
+                <td><strong>Oct 2025</strong></td>
+                <td>67</td>
+                <td>77.6%</td>
+                <td>34.3%</td>
+                <td>31.3%</td>
+                <td>15</td>
+                <td>50</td>
+                <td>2</td>
+                <td>97.0%</td>
+                <td>23.1%</td>
+                <td>$49.6K</td>
+                <td>$17.4K</td>
+                <td>35.0%</td>
+                <td>$41.1K</td>
+                <td>$2.7K</td>
+            </tr><tr class="mature">
+                <td><strong>Nov 2025</strong></td>
+                <td>47</td>
+                <td>72.3%</td>
+                <td>25.5%</td>
+                <td>23.4%</td>
+                <td>8</td>
+                <td>34</td>
+                <td>5</td>
+                <td>89.4%</td>
+                <td>19.0%</td>
+                <td>$36.0K</td>
+                <td>$14.2K</td>
+                <td>39.5%</td>
+                <td>$69.1K</td>
+                <td>$8.6K</td>
+            </tr><tr class="mature">
+                <td><strong>Dec 2025</strong></td>
+                <td>36</td>
+                <td>63.9%</td>
+                <td>27.8%</td>
+                <td>22.2%</td>
+                <td>4</td>
+                <td>27</td>
+                <td>5</td>
+                <td>86.1%</td>
+                <td>12.9%</td>
+                <td>$28.6K</td>
+                <td>$6.7K</td>
+                <td>23.4%</td>
+                <td>$41.2K</td>
+                <td>$10.3K</td>
+            </tr><tr class="immature">
+                <td><strong>Jan 2026</strong></td>
+                <td>100</td>
+                <td>80.0%</td>
+                <td>22.0%</td>
+                <td>10.0%</td>
+                <td>1</td>
+                <td>37</td>
+                <td>62</td>
+                <td>38.0%</td>
+                <td>2.6%</td>
+                <td>$76.3K</td>
+                <td>$500</td>
+                <td>0.7%</td>
+                <td>$88.9K</td>
+                <td>$88.9K</td>
+            </tr><tr class="immature">
+                <td><strong>Feb 2026</strong></td>
+                <td>41</td>
+                <td>48.8%</td>
+                <td>17.1%</td>
+                <td>9.8%</td>
+                <td>0</td>
+                <td>4</td>
+                <td>37</td>
+                <td>9.8%</td>
+                <td>0.0%</td>
+                <td>$27.8K</td>
+                <td>$0</td>
+                <td>0.0%</td>
+                <td>$59.7K</td>
+                <td>—</td>
+            </tr></tbody>
+        </table>
+    </div>
+    <div class="callout" style="margin-top: 16px;">
+        <strong>Why this matters:</strong> Your "true" win rate comes from mature cohorts where most deals have resolved.
+        Looking at all-time win rates gets skewed by recently-created deals that haven't had time to close.
+        Focus on cohorts with &gt;70% resolution for reliable conversion benchmarks.
+        <br><strong>Mktg Spend</strong> = total tracked marketing spend that month (LinkedIn+Vouchers/Tremendous+Meta+Events+GROW+DTConnect+Landmark).
+        <strong>Cohort CAC</strong> = that month's spend / won deals from that cohort. N/A where spend data is not available.
+    </div>
+</div>
+
+<div class="section">
+    <h2>Time to Close</h2>
+    <div class="section-desc">
+        How long deals take from creation to close. Shows Won vs Lost separately —
+        if lost deals die fast, your pipeline is qualifying quickly. If they linger, there may be a stall problem.
+    </div>
+
+    <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card">
+            <div class="kpi-value green">33.2d</div>
+            <div class="kpi-label">Median Days to Won</div>
+            <div class="kpi-detail">Avg: 42.7d &nbsp;|&nbsp; n=111</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value red">35.8d</div>
+            <div class="kpi-label">Median Days to Lost</div>
+            <div class="kpi-detail">Avg: 44.2d &nbsp;|&nbsp; n=481</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">15.9d – 57.2d</div>
+            <div class="kpi-label">Won IQR (25th–75th)</div>
+            <div class="kpi-detail">Middle 50% of won deals</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">15.0d – 61.1d</div>
+            <div class="kpi-label">Lost IQR (25th–75th)</div>
+            <div class="kpi-detail">Middle 50% of lost deals</div>
+        </div>
+    </div>
+
+    <h3 style="font-size: 15px; margin-bottom: 8px; margin-top: 24px;">Speed vs Win Rate</h3>
+    <div class="section-desc">Does closing faster correlate with winning? Bucket deals by how many days they took to resolve.</div>
+    <table class="data-table compact">
+        <thead>
+            <tr>
+                <th>Time Bucket</th>
+                <th>Total Closed</th>
+                <th>Won</th>
+                <th>Lost</th>
+                <th>Win Rate</th>
+                <th>Won Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+<tr>
+            <td><strong>0-7 days</strong></td>
+            <td>85</td>
+            <td>14</td>
+            <td>71</td>
+            <td class="warn">16.5%</td>
+            <td>$13.3K</td>
+        </tr><tr>
+            <td><strong>8-14 days</strong></td>
+            <td>37</td>
+            <td>9</td>
+            <td>28</td>
+            <td class="warn">24.3%</td>
+            <td>$10.2K</td>
+        </tr><tr>
+            <td><strong>15-30 days</strong></td>
+            <td>113</td>
+            <td>23</td>
+            <td>90</td>
+            <td class="warn">20.4%</td>
+            <td>$26.2K</td>
+        </tr><tr>
+            <td><strong>31-60 days</strong></td>
+            <td>179</td>
+            <td>36</td>
+            <td>143</td>
+            <td class="warn">20.1%</td>
+            <td>$34.5K</td>
+        </tr><tr>
+            <td><strong>61-90 days</strong></td>
+            <td>92</td>
+            <td>18</td>
+            <td>74</td>
+            <td class="warn">19.6%</td>
+            <td>$28.9K</td>
+        </tr><tr>
+            <td><strong>90+ days</strong></td>
+            <td>53</td>
+            <td>7</td>
+            <td>46</td>
+            <td class="bad">13.2%</td>
+            <td>$6.5K</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; margin-bottom: 8px; margin-top: 24px;">Time to Close by Deal Type</h3>
+    <table class="data-table compact">
+        <thead>
+            <tr>
+                <th>Deal Type</th>
+                <th>Won Median</th>
+                <th>Won Avg</th>
+                <th>Won n</th>
+                <th>Lost Median</th>
+                <th>Lost Avg</th>
+                <th>Lost n</th>
+            </tr>
+        </thead>
+        <tbody>
+<tr>
+            <td><strong>Marketing</strong></td>
+            <td>32.3d</td>
+            <td>36.1d</td>
+            <td>41</td>
+            <td>30.9d</td>
+            <td>38.2d</td>
+            <td>334</td>
+        </tr><tr>
+            <td><strong>Partnerships</strong></td>
+            <td>35.0d</td>
+            <td>49.0d</td>
+            <td>45</td>
+            <td>53.6d</td>
+            <td>64.8d</td>
+            <td>92</td>
+        </tr><tr>
+            <td><strong>Sales</strong></td>
+            <td>41.1d</td>
+            <td>42.3d</td>
+            <td>25</td>
+            <td>48.3d</td>
+            <td>46.4d</td>
+            <td>54</td>
+        </tr><tr>
+            <td><strong>Unknown</strong></td>
+            <td>—</td>
+            <td>—</td>
+            <td>0</td>
+            <td>22.1d</td>
+            <td>22.1d</td>
+            <td>1</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; margin-bottom: 8px; margin-top: 24px;">Time to Close by AE</h3>
+    <table class="data-table compact">
+        <thead>
+            <tr>
+                <th>AE</th>
+                <th>Won Median</th>
+                <th>Won Avg</th>
+                <th>Won n</th>
+                <th>Lost Median</th>
+                <th>Lost Avg</th>
+                <th>Lost n</th>
+            </tr>
+        </thead>
+        <tbody>
+<tr>
+            <td><strong>Conor Mahony</strong></td>
+            <td>30.1d</td>
+            <td>43.4d</td>
+            <td>48</td>
+            <td>30.5d</td>
+            <td>41.7d</td>
+            <td>169</td>
+        </tr><tr>
+            <td><strong>Satru Rahmat</strong></td>
+            <td>35.5d</td>
+            <td>44.1d</td>
+            <td>12</td>
+            <td>36.8d</td>
+            <td>51.0d</td>
+            <td>102</td>
+        </tr><tr>
+            <td><strong>Tyrone Kane</strong></td>
+            <td>37.0d</td>
+            <td>42.3d</td>
+            <td>42</td>
+            <td>31.6d</td>
+            <td>39.9d</td>
+            <td>158</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; margin-bottom: 8px; margin-top: 24px;">Time to Close by Monthly Cohort</h3>
+    <div class="section-desc">Is your sales cycle getting faster or slower over time?</div>
+    <div class="scroll-x">
+    <table class="data-table compact">
+        <thead>
+            <tr>
+                <th>Cohort</th>
+                <th>Won Median</th>
+                <th>Won Avg</th>
+                <th>Won n</th>
+                <th>Lost Median</th>
+                <th>Lost Avg</th>
+                <th>Lost n</th>
+            </tr>
+        </thead>
+        <tbody>
+<tr>
+            <td><strong>Jan 2025</strong></td>
+            <td>25.1d</td>
+            <td>39.7d</td>
+            <td>13</td>
+            <td>31.6d</td>
+            <td>37.8d</td>
+            <td>20</td>
+        </tr><tr>
+            <td><strong>Feb 2025</strong></td>
+            <td>77.4d</td>
+            <td>97.4d</td>
+            <td>9</td>
+            <td>48.0d</td>
+            <td>54.8d</td>
+            <td>29</td>
+        </tr><tr>
+            <td><strong>Mar 2025</strong></td>
+            <td>38.1d</td>
+            <td>41.6d</td>
+            <td>8</td>
+            <td>38.8d</td>
+            <td>41.3d</td>
+            <td>39</td>
+        </tr><tr>
+            <td><strong>Apr 2025</strong></td>
+            <td>41.9d</td>
+            <td>45.1d</td>
+            <td>10</td>
+            <td>35.8d</td>
+            <td>54.7d</td>
+            <td>38</td>
+        </tr><tr>
+            <td><strong>May 2025</strong></td>
+            <td>31.4d</td>
+            <td>37.7d</td>
+            <td>11</td>
+            <td>32.8d</td>
+            <td>41.3d</td>
+            <td>33</td>
+        </tr><tr>
+            <td><strong>Jun 2025</strong></td>
+            <td>57.2d</td>
+            <td>57.3d</td>
+            <td>5</td>
+            <td>41.7d</td>
+            <td>54.7d</td>
+            <td>36</td>
+        </tr><tr>
+            <td><strong>Jul 2025</strong></td>
+            <td>20.7d</td>
+            <td>29.5d</td>
+            <td>8</td>
+            <td>38.4d</td>
+            <td>47.0d</td>
+            <td>42</td>
+        </tr><tr>
+            <td><strong>Aug 2025</strong></td>
+            <td>33.5d</td>
+            <td>53.3d</td>
+            <td>12</td>
+            <td>28.8d</td>
+            <td>43.0d</td>
+            <td>43</td>
+        </tr><tr>
+            <td><strong>Sep 2025</strong></td>
+            <td>44.0d</td>
+            <td>54.1d</td>
+            <td>7</td>
+            <td>40.3d</td>
+            <td>49.3d</td>
+            <td>49</td>
+        </tr><tr>
+            <td><strong>Oct 2025</strong></td>
+            <td>18.9d</td>
+            <td>24.6d</td>
+            <td>15</td>
+            <td>51.4d</td>
+            <td>54.3d</td>
+            <td>50</td>
+        </tr><tr>
+            <td><strong>Nov 2025</strong></td>
+            <td>7.6d</td>
+            <td>11.8d</td>
+            <td>8</td>
+            <td>50.5d</td>
+            <td>46.7d</td>
+            <td>34</td>
+        </tr><tr>
+            <td><strong>Dec 2025</strong></td>
+            <td>35.2d</td>
+            <td>31.7d</td>
+            <td>4</td>
+            <td>36.3d</td>
+            <td>31.3d</td>
+            <td>27</td>
+        </tr><tr>
+            <td><strong>Jan 2026</strong></td>
+            <td>21.3d</td>
+            <td>21.3d</td>
+            <td>1</td>
+            <td>14.0d</td>
+            <td>13.4d</td>
+            <td>37</td>
+        </tr><tr>
+            <td><strong>Feb 2026</strong></td>
+            <td>—</td>
+            <td>—</td>
+            <td>0</td>
+            <td>2.4d</td>
+            <td>2.6d</td>
+            <td>4</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div class="callout" style="margin-top: 16px;">
+        <strong>Reading this section:</strong> Median is more reliable than average (not skewed by outliers).
+        The "Speed vs Win Rate" table reveals whether deals that close quickly tend to win more often —
+        a strong pattern here means speed is a leading indicator of deal health.
+        If lost deals take much longer than won deals, consider implementing earlier disqualification.
+    </div>
+</div>
+
+<div class="section">
+    <h2>Key Insights & Recommendations</h2>
+    <div class="callout">
+        <strong>🎯 True Win Rate (Mature Cohorts):</strong> 20.0% by volume, 29.0% by revenue.
+        Based on cohorts with &gt;70% of deals resolved. This is your most reliable conversion benchmark.
+    </div>
+    <div class="callout">
+        <strong>💰 Revenue Conversion:</strong> You entered $545.7K in pipeline and have won $128.4K so far.
+        Revenue conversion often lags volume because larger deals take longer to close.
+    </div>
+
+    <div class="callout">
+        <strong>🏆 Best Performing Type:</strong> Partnerships deals have the highest win rate at 32.8%.
+        <strong>⚠️ Lowest:</strong> Marketing at 10.9%.
+    </div>
+
+    <div class="callout">
+        <strong>📊 Cohort Maturity:</strong> You have 12 mature cohort(s) (2025-01, 2025-02, 2025-03, 2025-04, 2025-05, 2025-06, 2025-07, 2025-08, 2025-09, 2025-10, 2025-11, 2025-12).
+        Recent months are still maturing — their win rates will change as open deals resolve.
+    </div>
+    <div class="callout">
+        <strong>💡 Suggested Next Steps:</strong><br>
+        1. Focus on the biggest stage-to-stage drop-off to find your bottleneck<br>
+        2. Compare AE conversion rates to identify coaching opportunities<br>
+        3. Watch immature cohorts month-over-month as they mature<br>
+        4. Consider tracking <em>why</em> deals drop off at each stage (closed lost reasons by stage)
+    </div>
+</div>
+
+<div class="footer">
+    Dashboard built from HubSpot CRM data · 709 deals analyzed · Dataships Sales Pipeline
+</div>
+
+</body>
+</html>

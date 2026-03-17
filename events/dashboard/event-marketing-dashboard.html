@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dataships Event Marketing Dashboard | Jan 2025 - Feb 2026</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card-border: #2a2d3a;
+    --text: #e4e4e7;
+    --text-muted: #9ca3af;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.1);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --yellow: #eab308;
+    --yellow-bg: rgba(234,179,8,0.1);
+    --blue: #3b82f6;
+    --blue-bg: rgba(59,130,246,0.1);
+    --purple: #a855f7;
+    --purple-bg: rgba(168,85,247,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 24px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--accent-light), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header p { color: var(--text-muted); font-size: 14px; }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .kpi .value { font-size: 28px; font-weight: 700; }
+  .kpi .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .kpi.green .value { color: var(--green); }
+  .kpi.blue .value { color: var(--blue); }
+  .kpi.purple .value { color: var(--purple); }
+  .kpi.yellow .value { color: var(--yellow); }
+  .kpi.red .value { color: var(--red); }
+  .kpi.accent .value { color: var(--accent-light); }
+  .section { margin-bottom: 32px; }
+  .section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-muted);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    margin-bottom: 16px;
+  }
+  th {
+    background: rgba(99,102,241,0.1);
+    color: var(--accent-light);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  th.right, td.right { text-align: right; }
+  td {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-top: 1px solid var(--card-border);
+  }
+  tr:hover td { background: rgba(99,102,241,0.03); }
+  tr.total-row td {
+    font-weight: 700;
+    background: rgba(99,102,241,0.08);
+    border-top: 2px solid var(--accent);
+  }
+  tr.highlight td { background: var(--green-bg); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  .bar-container { display: flex; align-items: center; gap: 8px; }
+  .bar { height: 20px; border-radius: 4px; min-width: 2px; transition: width 0.3s; }
+  .bar-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .note-box {
+    background: rgba(234,179,8,0.08);
+    border: 1px solid rgba(234,179,8,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--yellow);
+    margin-bottom: 16px;
+  }
+  .insight-box {
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .insight-box strong { color: var(--accent-light); }
+  .chart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+  .chart-label { width: 160px; font-size: 13px; text-align: right; flex-shrink: 0; }
+  .chart-bar-wrap { flex: 1; position: relative; }
+  .chart-bar {
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    min-width: 40px;
+  }
+  .chart-value { width: 100px; font-size: 13px; text-align: right; flex-shrink: 0; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .tab.active, .tab:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .footer {
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--card-border);
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Event Marketing Dashboard</h1>
+  <p>Dataships &mdash; January 1, 2025 &ndash; February 12, 2026 &mdash; Data sourced from HubSpot</p>
+</div>
+
+<!-- ============ TOP-LEVEL KPIs ============ -->
+<div class="kpi-grid">
+  <div class="kpi accent">
+    <div class="label">Events Tracked</div>
+    <div class="value">9</div>
+    <div class="sub">With spend data since Jan 2025</div>
+  </div>
+  <div class="kpi red">
+    <div class="label">Total Event Spend</div>
+    <div class="value">$133,619</div>
+    <div class="sub">Across all 9 events</div>
+  </div>
+  <div class="kpi blue">
+    <div class="label">Contacts Generated</div>
+    <div class="value">582</div>
+    <div class="sub">From event contact list</div>
+  </div>
+  <div class="kpi purple">
+    <div class="label">Deals Created</div>
+    <div class="value">52</div>
+    <div class="sub">33 from tracked events + 19 other</div>
+  </div>
+  <div class="kpi yellow">
+    <div class="label">Total Pipeline (ARR)</div>
+    <div class="value">$807K</div>
+    <div class="sub">$67,257 MRR &times; 12</div>
+  </div>
+  <div class="kpi green">
+    <div class="label">Closed-Won Customers</div>
+    <div class="value">15</div>
+    <div class="sub">10 from tracked events</div>
+  </div>
+  <div class="kpi green">
+    <div class="label">Closed-Won ARR</div>
+    <div class="value">$204,804</div>
+    <div class="sub">$17,067 MRR &times; 12</div>
+  </div>
+  <div class="kpi green">
+    <div class="label">Total ROI (ARR / Spend)</div>
+    <div class="value">1.74x</div>
+    <div class="sub">Excl. Lead Foremost (last 90d)</div>
+  </div>
+</div>
+
+<div class="note-box">
+  <strong>ROI Note:</strong> Total return calculated as Closed-Won ARR ($204,804) vs. spend excluding events in the last 90 days ($117,619 &mdash; excludes Lead Foremost 50 at $16,000). Net return = $87,186 (74.1% ROI). With $125,664 ARR still in open pipeline, potential total return could reach $330,468 ARR.
+</div>
+
+<!-- ============ T&E ADJUSTED ROI ============ -->
+<div style="background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--accent);">All-In Cost: Spend + 15% T&amp;E</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 16px;">
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Event Spend</div>
+      <div style="font-size: 22px; font-weight: 700;">$133,619</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">+ 15% T&amp;E</div>
+      <div style="font-size: 22px; font-weight: 700;">$20,043</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">All-In Spend</div>
+      <div style="font-size: 22px; font-weight: 700; color: var(--accent);">$153,662</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">All-In (Excl. Last 90d)</div>
+      <div style="font-size: 22px; font-weight: 700; color: var(--accent);">$135,262</div>
+      <div style="font-size: 11px; color: var(--text-muted);">Excludes Lead Foremost ($18,400)</div>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding-top: 16px; border-top: 1px solid var(--card-border);">
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Closed-Won ARR</div>
+      <div style="font-size: 22px; font-weight: 700; color: #22c55e;">$204,804</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">T&amp;E-Factored ROI</div>
+      <div style="font-size: 28px; font-weight: 700; color: #22c55e;">1.51x</div>
+      <div style="font-size: 11px; color: var(--text-muted);">ARR / All-In Spend (excl. last 90d)</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Net Return</div>
+      <div style="font-size: 22px; font-weight: 700; color: #22c55e;">$69,542</div>
+      <div style="font-size: 11px; color: var(--text-muted);">$204,804 ARR &minus; $135,262 all-in</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EVENT PERFORMANCE TABLE ============ -->
+<div class="section">
+  <h2>Event Performance Summary</h2>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('pipeline')">Pipeline View</div>
+    <div class="tab" onclick="switchTab('revenue')">Revenue View</div>
+    <div class="tab" onclick="switchTab('efficiency')">Efficiency View</div>
+  </div>
+
+  <div id="tab-pipeline" class="tab-content active">
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="right">Spend</th>
+          <th class="right">Contacts</th>
+          <th class="right">Deals</th>
+          <th class="right">Pipeline MRR</th>
+          <th class="right">Pipeline ARR</th>
+          <th class="right">Open Deals</th>
+          <th class="right">Open ARR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Shoptalk</td>
+          <td class="right">$28,225</td>
+          <td class="right">82</td>
+          <td class="right">9</td>
+          <td class="right">$12,036</td>
+          <td class="right">$144,432</td>
+          <td class="right">2</td>
+          <td class="right">$30,000</td>
+        </tr>
+        <tr>
+          <td>CTC Summit</td>
+          <td class="right">$15,000</td>
+          <td class="right">33</td>
+          <td class="right">9</td>
+          <td class="right">$19,700</td>
+          <td class="right">$236,400</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>Camp Commerce</td>
+          <td class="right">$27,500</td>
+          <td class="right">52</td>
+          <td class="right">8</td>
+          <td class="right">$14,509</td>
+          <td class="right">$174,108</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>SF Instant Dinner</td>
+          <td class="right">$2,376</td>
+          <td class="right">0</td>
+          <td class="right">1</td>
+          <td class="right">$600</td>
+          <td class="right">$7,200</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>San Diego Small Ecom</td>
+          <td class="right">$750</td>
+          <td class="right">0</td>
+          <td class="right">1</td>
+          <td class="right">$1,632</td>
+          <td class="right">$19,584</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>Klaviyo Boston</td>
+          <td class="right">$5,232</td>
+          <td class="right">10</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>DTC Live London</td>
+          <td class="right">$5,232</td>
+          <td class="right">310</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+        </tr>
+        <tr>
+          <td>League of Originals</td>
+          <td class="right">$33,304</td>
+          <td class="right">57</td>
+          <td class="right">4</td>
+          <td class="right">$4,822</td>
+          <td class="right">$57,865</td>
+          <td class="right">3</td>
+          <td class="right">$57,864</td>
+        </tr>
+        <tr>
+          <td>Lead Foremost 50</td>
+          <td class="right">$16,000</td>
+          <td class="right">31</td>
+          <td class="right">1</td>
+          <td class="right">$750</td>
+          <td class="right">$9,000</td>
+          <td class="right">1</td>
+          <td class="right">$9,000</td>
+        </tr>
+        <tr class="total-row">
+          <td>TOTAL (Tracked)</td>
+          <td class="right">$133,619</td>
+          <td class="right">575</td>
+          <td class="right">33</td>
+          <td class="right">$54,049</td>
+          <td class="right">$648,589</td>
+          <td class="right">6</td>
+          <td class="right">$96,864</td>
+        </tr>
+        <tr style="opacity: 0.6">
+          <td>Other / Untracked</td>
+          <td class="right">&mdash;</td>
+          <td class="right">7</td>
+          <td class="right">19</td>
+          <td class="right">$13,208</td>
+          <td class="right">$158,496</td>
+          <td class="right">1</td>
+          <td class="right">$28,800</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="tab-revenue" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="right">Spend</th>
+          <th class="right">Won Deals</th>
+          <th class="right">Won MRR</th>
+          <th class="right">Won ARR</th>
+          <th class="right">Lost Deals</th>
+          <th class="right">Win Rate</th>
+          <th class="right">ROI (ARR/Spend)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Camp Commerce</td>
+          <td class="right">$27,500</td>
+          <td class="right"><span class="badge badge-green">5</span></td>
+          <td class="right">$8,661</td>
+          <td class="right">$103,932</td>
+          <td class="right">3</td>
+          <td class="right">62.5%</td>
+          <td class="right"><span class="badge badge-green">3.78x</span></td>
+        </tr>
+        <tr>
+          <td>SF Instant Dinner</td>
+          <td class="right">$2,376</td>
+          <td class="right"><span class="badge badge-green">1</span></td>
+          <td class="right">$600</td>
+          <td class="right">$7,200</td>
+          <td class="right">0</td>
+          <td class="right">100%</td>
+          <td class="right"><span class="badge badge-green">3.03x</span></td>
+        </tr>
+        <tr>
+          <td>CTC Summit</td>
+          <td class="right">$15,000</td>
+          <td class="right"><span class="badge badge-green">2</span></td>
+          <td class="right">$3,300</td>
+          <td class="right">$39,600</td>
+          <td class="right">7</td>
+          <td class="right">22.2%</td>
+          <td class="right"><span class="badge badge-green">2.64x</span></td>
+        </tr>
+        <tr>
+          <td>Shoptalk</td>
+          <td class="right">$28,225</td>
+          <td class="right"><span class="badge badge-green">2</span></td>
+          <td class="right">$1,037</td>
+          <td class="right">$12,444</td>
+          <td class="right">5</td>
+          <td class="right">22.2%</td>
+          <td class="right"><span class="badge badge-red">0.44x</span></td>
+        </tr>
+        <tr>
+          <td>San Diego Small Ecom</td>
+          <td class="right">$750</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">1</td>
+          <td class="right">0%</td>
+          <td class="right"><span class="badge badge-red">0x</span></td>
+        </tr>
+        <tr>
+          <td>Klaviyo Boston</td>
+          <td class="right">$5,232</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+          <td class="right"><span class="badge badge-red">0x</span></td>
+        </tr>
+        <tr>
+          <td>DTC Live London</td>
+          <td class="right">$5,232</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+          <td class="right"><span class="badge badge-red">0x</span></td>
+        </tr>
+        <tr>
+          <td>League of Originals</td>
+          <td class="right">$33,304</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">1</td>
+          <td class="right">0%</td>
+          <td class="right"><span class="badge badge-yellow">$57,864 open</span></td>
+        </tr>
+        <tr>
+          <td>Lead Foremost 50</td>
+          <td class="right">$16,000</td>
+          <td class="right">0</td>
+          <td class="right">$0</td>
+          <td class="right">$0</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+          <td class="right"><span class="badge badge-yellow">Too early</span></td>
+        </tr>
+        <tr class="total-row">
+          <td>TOTAL (Tracked)</td>
+          <td class="right">$133,619</td>
+          <td class="right">10</td>
+          <td class="right">$13,598</td>
+          <td class="right">$163,176</td>
+          <td class="right">17</td>
+          <td class="right">30.3%</td>
+          <td class="right">1.39x</td>
+        </tr>
+        <tr style="opacity: 0.6">
+          <td>Other / Untracked</td>
+          <td class="right">&mdash;</td>
+          <td class="right">5</td>
+          <td class="right">$3,469</td>
+          <td class="right">$41,628</td>
+          <td class="right">13</td>
+          <td class="right">26.3%</td>
+          <td class="right">&mdash;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="tab-efficiency" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="right">Cost / Contact</th>
+          <th class="right">Cost / Deal</th>
+          <th class="right">Contact&rarr;Deal %</th>
+          <th class="right">Avg Deal MRR</th>
+          <th class="right">Avg Deal ARR</th>
+          <th class="right">Blended CAC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Shoptalk</td>
+          <td class="right">$344</td>
+          <td class="right">$3,136</td>
+          <td class="right">11.0%</td>
+          <td class="right">$1,337</td>
+          <td class="right">$16,048</td>
+          <td class="right">$14,113</td>
+        </tr>
+        <tr>
+          <td>CTC Summit</td>
+          <td class="right">$455</td>
+          <td class="right">$1,667</td>
+          <td class="right">27.3%</td>
+          <td class="right">$2,189</td>
+          <td class="right">$26,267</td>
+          <td class="right">$7,500</td>
+        </tr>
+        <tr>
+          <td>Camp Commerce</td>
+          <td class="right">$529</td>
+          <td class="right">$3,438</td>
+          <td class="right">15.4%</td>
+          <td class="right">$1,814</td>
+          <td class="right">$21,764</td>
+          <td class="right">$5,500</td>
+        </tr>
+        <tr>
+          <td>SF Instant Dinner</td>
+          <td class="right">&mdash;</td>
+          <td class="right">$2,376</td>
+          <td class="right">&mdash;</td>
+          <td class="right">$600</td>
+          <td class="right">$7,200</td>
+          <td class="right">$2,376</td>
+        </tr>
+        <tr>
+          <td>San Diego Small Ecom</td>
+          <td class="right">&mdash;</td>
+          <td class="right">$750</td>
+          <td class="right">&mdash;</td>
+          <td class="right">$1,632</td>
+          <td class="right">$19,584</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>Klaviyo Boston</td>
+          <td class="right">$523</td>
+          <td class="right">&mdash;</td>
+          <td class="right">0%</td>
+          <td class="right">&mdash;</td>
+          <td class="right">&mdash;</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>DTC Live London</td>
+          <td class="right">$17</td>
+          <td class="right">&mdash;</td>
+          <td class="right">0%</td>
+          <td class="right">&mdash;</td>
+          <td class="right">&mdash;</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>League of Originals</td>
+          <td class="right">$584</td>
+          <td class="right">$8,326</td>
+          <td class="right">7.0%</td>
+          <td class="right">$1,206</td>
+          <td class="right">$14,466</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>Lead Foremost 50</td>
+          <td class="right">$516</td>
+          <td class="right">$16,000</td>
+          <td class="right">3.2%</td>
+          <td class="right">$750</td>
+          <td class="right">$9,000</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr class="total-row">
+          <td>OVERALL</td>
+          <td class="right">$232</td>
+          <td class="right">$4,049</td>
+          <td class="right">5.7%</td>
+          <td class="right">$1,293</td>
+          <td class="right">$15,521</td>
+          <td class="right">$13,362</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ TOP EVENTS BY PIPELINE ============ -->
+<div class="section">
+  <h2>Top Events by Pipeline ARR</h2>
+  <div style="background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+    <div class="chart-row">
+      <div class="chart-label">CTC Summit</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:100%; background: linear-gradient(90deg, var(--accent), var(--purple));">$236,400</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Camp Commerce</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:73.6%; background: linear-gradient(90deg, var(--accent), var(--purple));">$174,108</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Shoptalk</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:61.1%; background: linear-gradient(90deg, var(--accent), var(--purple));">$144,432</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">League of Originals</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:24.5%; background: linear-gradient(90deg, var(--accent), var(--purple));">$57,865</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">San Diego Small Ecom</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:8.3%; background: linear-gradient(90deg, var(--accent), var(--purple));">$19,584</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Lead Foremost 50</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:3.8%; background: linear-gradient(90deg, var(--accent), var(--purple));">$9,000</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">SF Instant Dinner</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:3.0%; background: linear-gradient(90deg, var(--accent), var(--purple));">$7,200</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">Klaviyo Boston</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:1%; background: var(--card-border);">$0</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">DTC Live London</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:1%; background: var(--card-border);">$0</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOP EVENTS BY REVENUE ============ -->
+<div class="section">
+  <h2>Top Events by Closed-Won ARR</h2>
+  <div style="background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+    <div class="chart-row">
+      <div class="chart-label">Camp Commerce</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:100%; background: linear-gradient(90deg, var(--green), #15803d);">$103,932</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">CTC Summit</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:38.1%; background: linear-gradient(90deg, var(--green), #15803d);">$39,600</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Shoptalk</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:12.0%; background: linear-gradient(90deg, var(--green), #15803d);">$12,444</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">SF Instant Dinner</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:6.9%; background: linear-gradient(90deg, var(--green), #15803d);">$7,200</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">League of Originals</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:1%; background: var(--card-border);">$0 (3 open)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">Lead Foremost 50</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:1%; background: var(--card-border);">$0 (1 open)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONVERSION FUNNEL ============ -->
+<div class="section">
+  <h2>Conversion Rate: Contacts &rarr; Deals (by Event)</h2>
+  <div style="background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+    <div class="chart-row">
+      <div class="chart-label">CTC Summit</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:100%; background: linear-gradient(90deg, var(--blue), #1d4ed8);">27.3% (9/33)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Camp Commerce</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:56.4%; background: linear-gradient(90deg, var(--blue), #1d4ed8);">15.4% (8/52)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Shoptalk</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:40.3%; background: linear-gradient(90deg, var(--blue), #1d4ed8);">11.0% (9/82)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">League of Originals</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:25.6%; background: linear-gradient(90deg, var(--blue), #1d4ed8);">7.0% (4/57)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label">Lead Foremost 50</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:11.7%; background: linear-gradient(90deg, var(--blue), #1d4ed8);">3.2% (1/31)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">Klaviyo Boston</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:2%; background: var(--card-border);">0% (0/10)</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-label" style="color: var(--text-muted);">DTC Live London</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:2%; background: var(--card-border);">0% (0/310)</div></div>
+    </div>
+  </div>
+  <div class="insight-box" style="margin-top: 12px;">
+    <strong>Insight:</strong> DTC Live London generated 310 contacts (53% of all contacts) but zero deals. This suggests either lead quality issues or incomplete deal attribution. CTC Summit has the best conversion at 27.3%.
+  </div>
+</div>
+
+<!-- ============ TWO-COL SECTION ============ -->
+<div class="two-col">
+  <!-- COST EFFICIENCY -->
+  <div class="section">
+    <h2>Customer Acquisition Cost (CAC)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="right">Spend</th>
+          <th class="right">Customers</th>
+          <th class="right">CAC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td>SF Instant Dinner</td>
+          <td class="right">$2,376</td>
+          <td class="right">1</td>
+          <td class="right"><span class="badge badge-green">$2,376</span></td>
+        </tr>
+        <tr>
+          <td>Camp Commerce</td>
+          <td class="right">$27,500</td>
+          <td class="right">5</td>
+          <td class="right"><span class="badge badge-green">$5,500</span></td>
+        </tr>
+        <tr>
+          <td>CTC Summit</td>
+          <td class="right">$15,000</td>
+          <td class="right">2</td>
+          <td class="right"><span class="badge badge-yellow">$7,500</span></td>
+        </tr>
+        <tr>
+          <td>Shoptalk</td>
+          <td class="right">$28,225</td>
+          <td class="right">2</td>
+          <td class="right"><span class="badge badge-red">$14,113</span></td>
+        </tr>
+        <tr>
+          <td>San Diego</td>
+          <td class="right">$750</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>Klaviyo Boston</td>
+          <td class="right">$5,232</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>DTC Live</td>
+          <td class="right">$5,232</td>
+          <td class="right">0</td>
+          <td class="right">&mdash;</td>
+        </tr>
+        <tr>
+          <td>League of Originals</td>
+          <td class="right">$33,304</td>
+          <td class="right">0</td>
+          <td class="right"><span class="badge badge-yellow">Pending</span></td>
+        </tr>
+        <tr>
+          <td>Lead Foremost 50</td>
+          <td class="right">$16,000</td>
+          <td class="right">0</td>
+          <td class="right"><span class="badge badge-yellow">Too early</span></td>
+        </tr>
+        <tr class="total-row">
+          <td>BLENDED</td>
+          <td class="right">$133,619</td>
+          <td class="right">10</td>
+          <td class="right">$13,362</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AVERAGE DEAL SIZE -->
+  <div class="section">
+    <h2>Average Deal Size by Event</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="right">Deals</th>
+          <th class="right">Avg MRR</th>
+          <th class="right">Avg ARR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CTC Summit</td>
+          <td class="right">9</td>
+          <td class="right">$2,189</td>
+          <td class="right"><span class="badge badge-green">$26,267</span></td>
+        </tr>
+        <tr>
+          <td>Camp Commerce</td>
+          <td class="right">8</td>
+          <td class="right">$1,814</td>
+          <td class="right">$21,764</td>
+        </tr>
+        <tr>
+          <td>San Diego Small Ecom</td>
+          <td class="right">1</td>
+          <td class="right">$1,632</td>
+          <td class="right">$19,584</td>
+        </tr>
+        <tr>
+          <td>Shoptalk</td>
+          <td class="right">9</td>
+          <td class="right">$1,337</td>
+          <td class="right">$16,048</td>
+        </tr>
+        <tr>
+          <td>League of Originals</td>
+          <td class="right">4</td>
+          <td class="right">$1,206</td>
+          <td class="right">$14,466</td>
+        </tr>
+        <tr>
+          <td>Lead Foremost 50</td>
+          <td class="right">1</td>
+          <td class="right">$750</td>
+          <td class="right">$9,000</td>
+        </tr>
+        <tr>
+          <td>SF Instant Dinner</td>
+          <td class="right">1</td>
+          <td class="right">$600</td>
+          <td class="right">$7,200</td>
+        </tr>
+        <tr class="total-row">
+          <td>OVERALL</td>
+          <td class="right">52</td>
+          <td class="right">$1,293</td>
+          <td class="right">$15,521</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ MONTHLY PIPELINE TREND ============ -->
+<div class="section">
+  <h2>Monthly Event-Sourced Deal Creation</h2>
+  <div class="note-box">Pipeline shown by month the deal was created (not event date). Shows whether events are producing more or less pipeline over time.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th class="right">Deals Created</th>
+        <th class="right">Pipeline MRR</th>
+        <th class="right">Pipeline ARR</th>
+        <th class="right">Closed-Won (from that cohort)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Jan 2025</td>
+        <td class="right">7</td>
+        <td class="right">$3,990</td>
+        <td class="right">$47,880</td>
+        <td class="right">2 ($1,350 MRR)</td>
+      </tr>
+      <tr>
+        <td>Feb 2025</td>
+        <td class="right">3</td>
+        <td class="right">$1,200</td>
+        <td class="right">$14,400</td>
+        <td class="right">1 ($1,000 MRR)</td>
+      </tr>
+      <tr>
+        <td>Apr 2025</td>
+        <td class="right">11</td>
+        <td class="right">$12,304</td>
+        <td class="right">$147,648</td>
+        <td class="right">3 ($1,956 MRR)</td>
+      </tr>
+      <tr>
+        <td>Jun 2025</td>
+        <td class="right">1</td>
+        <td class="right">$200</td>
+        <td class="right">$2,400</td>
+        <td class="right">1 ($200 MRR)</td>
+      </tr>
+      <tr>
+        <td>Jul 2025</td>
+        <td class="right">5</td>
+        <td class="right">$14,900</td>
+        <td class="right">$178,800</td>
+        <td class="right">1 ($2,000 MRR)</td>
+      </tr>
+      <tr>
+        <td>Aug 2025</td>
+        <td class="right">6</td>
+        <td class="right">$9,909</td>
+        <td class="right">$118,908</td>
+        <td class="right">3 ($2,161 MRR)</td>
+      </tr>
+      <tr>
+        <td>Sep 2025</td>
+        <td class="right">6</td>
+        <td class="right">$11,480</td>
+        <td class="right">$137,760</td>
+        <td class="right">2 ($1,661 MRR)</td>
+      </tr>
+      <tr>
+        <td>Oct 2025</td>
+        <td class="right">2</td>
+        <td class="right">$1,900</td>
+        <td class="right">$22,800</td>
+        <td class="right">1 ($1,300 MRR)</td>
+      </tr>
+      <tr>
+        <td>Nov 2025</td>
+        <td class="right">5</td>
+        <td class="right">$8,822</td>
+        <td class="right">$105,865</td>
+        <td class="right">1 ($7,000 MRR)</td>
+      </tr>
+      <tr>
+        <td>Dec 2025</td>
+        <td class="right">1</td>
+        <td class="right">$0</td>
+        <td class="right">$0</td>
+        <td class="right">1 ($0 MRR)</td>
+      </tr>
+      <tr>
+        <td>Feb 2026</td>
+        <td class="right">5</td>
+        <td class="right">$4,750</td>
+        <td class="right">$57,000</td>
+        <td class="right">0 (deals still open)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ CLOSED-WON DEAL DETAIL ============ -->
+<div class="section">
+  <h2>All 15 Closed-Won Deals (Customers)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Deal</th>
+        <th>Event Source</th>
+        <th class="right">MRR</th>
+        <th class="right">ARR</th>
+        <th class="right">Close Date</th>
+        <th class="right">Days to Close</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AS Beauty Group - Julep</td>
+        <td><span class="badge badge-blue">Camp Commerce</span></td>
+        <td class="right">$7,000</td>
+        <td class="right">$84,000</td>
+        <td class="right">Nov 25, 2025</td>
+        <td class="right">0</td>
+      </tr>
+      <tr>
+        <td>CTC Summit - Heart & Soil</td>
+        <td><span class="badge badge-blue">CTC Summit</span></td>
+        <td class="right">$1,300</td>
+        <td class="right">$15,600</td>
+        <td class="right">Oct 30, 2025</td>
+        <td class="right">17</td>
+      </tr>
+      <tr>
+        <td>bodybio.com</td>
+        <td><span class="badge badge-blue">CTC Summit</span></td>
+        <td class="right">$2,000</td>
+        <td class="right">$24,000</td>
+        <td class="right">Aug 26, 2025</td>
+        <td class="right">27</td>
+      </tr>
+      <tr>
+        <td>Aurate New York</td>
+        <td><span class="badge badge-blue">Camp Commerce</span></td>
+        <td class="right">$1,161</td>
+        <td class="right">$13,932</td>
+        <td class="right">Sep 30, 2025</td>
+        <td class="right">32</td>
+      </tr>
+      <tr>
+        <td>andorwillow.com</td>
+        <td><span class="badge badge-blue">Camp Commerce</span></td>
+        <td class="right">$500</td>
+        <td class="right">$6,000</td>
+        <td class="right">Oct 24, 2025</td>
+        <td class="right">44</td>
+      </tr>
+      <tr>
+        <td>AS Beauty - Laura Geller</td>
+        <td><span class="badge badge-blue">Camp Commerce</span></td>
+        <td class="right">$0</td>
+        <td class="right">$0</td>
+        <td class="right">Nov 25, 2025</td>
+        <td class="right">88</td>
+      </tr>
+      <tr>
+        <td>AS Beauty Group - Bliss</td>
+        <td><span class="badge badge-blue">Camp Commerce</span></td>
+        <td class="right">$0</td>
+        <td class="right">$0</td>
+        <td class="right">Dec 16, 2025</td>
+        <td class="right">14</td>
+      </tr>
+      <tr>
+        <td>truebotanicals.com</td>
+        <td><span class="badge badge-blue">SF Instant Dinner</span></td>
+        <td class="right">$600</td>
+        <td class="right">$7,200</td>
+        <td class="right">Oct 24, 2025</td>
+        <td class="right">11</td>
+      </tr>
+      <tr>
+        <td>Laundry Sauce - New Demo</td>
+        <td><span class="badge badge-blue">Shoptalk</span></td>
+        <td class="right">$837</td>
+        <td class="right">$10,044</td>
+        <td class="right">Jun 5, 2025</td>
+        <td class="right">56</td>
+      </tr>
+      <tr>
+        <td>laundrysauce.com - sms</td>
+        <td><span class="badge badge-blue">Shoptalk</span></td>
+        <td class="right">$200</td>
+        <td class="right">$2,400</td>
+        <td class="right">Sep 26, 2025</td>
+        <td class="right">93</td>
+      </tr>
+      <tr style="opacity: 0.6">
+        <td>London Nootropics</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td class="right">$799</td>
+        <td class="right">$9,588</td>
+        <td class="right">Apr 23, 2025</td>
+        <td class="right">15</td>
+      </tr>
+      <tr style="opacity: 0.6">
+        <td>Plush in a rush</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td class="right">$320</td>
+        <td class="right">$3,840</td>
+        <td class="right">May 8, 2025</td>
+        <td class="right">35</td>
+      </tr>
+      <tr style="opacity: 0.6">
+        <td>Symprove UK</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td class="right">$1,000</td>
+        <td class="right">$12,000</td>
+        <td class="right">Jun 5, 2025</td>
+        <td class="right">108</td>
+      </tr>
+      <tr style="opacity: 0.6">
+        <td>Filson</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td class="right">$1,000</td>
+        <td class="right">$12,000</td>
+        <td class="right">Aug 19, 2025</td>
+        <td class="right">204</td>
+      </tr>
+      <tr style="opacity: 0.6">
+        <td>Built for Athletes</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td class="right">$350</td>
+        <td class="right">$4,200</td>
+        <td class="right">Jan 30, 2025</td>
+        <td class="right">3</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="2">TOTAL</td>
+        <td class="right">$17,067</td>
+        <td class="right">$204,804</td>
+        <td class="right" colspan="2">Avg 50 days to close</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ OPEN PIPELINE DETAIL ============ -->
+<div class="section">
+  <h2>Open Pipeline (7 Active Deals)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Deal</th>
+        <th>Event Source</th>
+        <th>Stage</th>
+        <th class="right">MRR</th>
+        <th class="right">ARR</th>
+        <th class="right">Expected Close</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Nomad - New Deal</td>
+        <td><span class="badge badge-blue">League of Originals</span></td>
+        <td>Negotiation</td>
+        <td class="right">$3,000</td>
+        <td class="right">$36,000</td>
+        <td class="right">Feb 28, 2026</td>
+      </tr>
+      <tr>
+        <td>Dr Squatch US/Can/Au</td>
+        <td><span class="badge badge-blue">Shoptalk</span></td>
+        <td>Demo Held</td>
+        <td class="right">$2,000</td>
+        <td class="right">$24,000</td>
+        <td class="right">Feb 14, 2026</td>
+      </tr>
+      <tr>
+        <td>YETI EU</td>
+        <td><span class="badge badge-yellow">Other</span></td>
+        <td>Demo Held</td>
+        <td class="right">$2,400</td>
+        <td class="right">$28,800</td>
+        <td class="right">Feb 26, 2026</td>
+      </tr>
+      <tr>
+        <td>Bala - New demo</td>
+        <td><span class="badge badge-blue">League of Originals</span></td>
+        <td>Demo Held</td>
+        <td class="right">$1,000</td>
+        <td class="right">$12,000</td>
+        <td class="right">Feb 28, 2026</td>
+      </tr>
+      <tr>
+        <td>Dr Squatch UK/EU</td>
+        <td><span class="badge badge-blue">Shoptalk</span></td>
+        <td>Onboarded</td>
+        <td class="right">$1,000</td>
+        <td class="right">$12,000</td>
+        <td class="right">Feb 14, 2026</td>
+      </tr>
+      <tr>
+        <td>GEM - New demo</td>
+        <td><span class="badge badge-blue">League of Originals</span></td>
+        <td>Negotiation</td>
+        <td class="right">$822</td>
+        <td class="right">$9,864</td>
+        <td class="right">Feb 15, 2026</td>
+      </tr>
+      <tr>
+        <td>Lo and Sons</td>
+        <td><span class="badge badge-blue">Lead Foremost 50</span></td>
+        <td>Demo Held</td>
+        <td class="right">$750</td>
+        <td class="right">$9,000</td>
+        <td class="right">Mar 31, 2026</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="3">TOTAL OPEN PIPELINE</td>
+        <td class="right">$10,972</td>
+        <td class="right">$131,664</td>
+        <td class="right"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ KEY INSIGHTS ============ -->
+<div class="section">
+  <h2>Key Insights & Recommendations</h2>
+
+  <div class="insight-box">
+    <strong>Best ROI Event: Camp Commerce (3.78x)</strong><br>
+    $27,500 spend &rarr; $103,932 closed-won ARR. 5 customers acquired at $5,500 CAC. Highest volume of wins and best return. <em>Recommend increasing investment in similar mid-size commerce events.</em>
+  </div>
+
+  <div class="insight-box">
+    <strong>Most Efficient Event: SF Instant Dinner (3.03x)</strong><br>
+    Only $2,376 spent, produced 1 customer worth $7,200 ARR. Smallest event with strongest per-dollar return. <em>Intimate dinners appear highly cost-effective.</em>
+  </div>
+
+  <div class="insight-box">
+    <strong>Highest Pipeline: CTC Summit ($236K ARR)</strong><br>
+    Generated the largest pipeline volume with strong 27.3% contact-to-deal conversion. 2 closed-won deals ($39,600 ARR) at $7,500 CAC. All deals now resolved (no open pipeline).
+  </div>
+
+  <div class="insight-box" style="border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.05);">
+    <strong>Watch: DTC Live London (310 contacts, 0 deals)</strong><br>
+    Generated 53% of all contacts but zero deals. At $17/contact it was the cheapest lead source, but conversion is non-existent. <em>Investigate whether this is a lead quality issue, attribution gap, or whether follow-up processes need improvement.</em>
+  </div>
+
+  <div class="insight-box" style="border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.05);">
+    <strong>Watch: League of Originals ($33,304 spend, $0 closed-won)</strong><br>
+    Largest single-event spend with no closed revenue yet. However, $57,864 ARR is in active pipeline across 3 deals (Nomad, Bala, GEM). ROI depends entirely on closing these. <em>Prioritize these 3 deals.</em>
+  </div>
+
+  <div class="insight-box" style="border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05);">
+    <strong>Underperformers: Shoptalk (0.44x ROI)</strong><br>
+    $28,225 spent but only $12,444 closed-won ARR (2 small wins). However, $42,000 in open Dr Squatch pipeline could change this. If both Dr Squatch deals close, ROI improves to 1.93x.
+  </div>
+
+  <div class="insight-box" style="border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.05);">
+    <strong>San Diego Small Ecom ($750 spend, $19,584 pipeline ARR)</strong><br>
+    Generated the Thirdlove deal ($1,632 MRR) which ultimately closed lost, but produced strong pipeline relative to spend. No contacts in the HubSpot list &mdash; contact attribution may be missing. <em>Worth investigating if contact tagging was missed.</em>
+  </div>
+
+  <div class="insight-box" style="border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05);">
+    <strong>Zero-Return Event: Klaviyo Boston ($5,232 spend)</strong><br>
+    10 contacts generated, but zero deals and zero pipeline. <em>Reconsider similar events without a clear deal path, or investigate whether follow-up was adequate.</em>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Dashboard generated Feb 12, 2026 &bull; Data from HubSpot lists 6773 (contacts) and 6288 (deals) &bull; All revenue figures in USD</p>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
