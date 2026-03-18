@@ -33,7 +33,7 @@ Every case study follows this arc:
 | **Solution** | Show how it works | Brief, mechanical: what we did, how long setup took, what the A/B test showed. Under 150 words. |
 | **Results** | The payoff | Specific numbers with context. Revenue attributed, subscriber growth, CLV impact. Tie back to business outcomes. |
 | **Quote** | Human endorsement | Direct quote from their team (Director+). Should reinforce business impact, not just "great tool." |
-| **CTA** | Drive action | "Want to see what Dataships could do for [your vertical]? Start with a free A/B test." |
+| **CTA** | Drive action | Two-line format: Line 1: "Use Dataships like [Brand Name] does." Line 2: "See how our checkout integration can transform your email + SMS list growth for higher LTV and revenue." |
 
 ## Tone & Style Rules
 
